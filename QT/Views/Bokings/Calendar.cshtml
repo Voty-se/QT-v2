@@ -1,0 +1,156 @@
+﻿@using System.Globalization
+@using QT.Authentication
+@using QT.Models
+@model Week
+
+@{
+    ViewBag.Title = "Bokningar";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+    var currentCulture = CultureInfo.CurrentCulture;
+    var weekNo = currentCulture.Calendar.GetWeekOfYear(
+                    Model.CurrentDate,
+                    currentCulture.DateTimeFormat.CalendarWeekRule,
+                    currentCulture.DateTimeFormat.FirstDayOfWeek);
+    
+    var isLogistic = AdminAuthenticationHelper.Current.GetAdminUserData().Role == Role.LogisticAdministrator.ToString();
+}
+
+@*<div class="well">Boka leverans</div>*@
+<div class="container" id="calendar">
+
+    <div class="container" id="calendarTopBar">
+        <div class="col-md-12">
+            <a class="col-md-2 align-left" href="@Url.Action("GetWeekCalendar", new { date = Model.CurrentDate.AddDays(-7), status = Status.All})"><span class="glyphicon glyphicon-arrow-left"></span></a>
+            <div class="col-md-8" id="calendarTopBarDate">
+                <span>@Model.DateFrom.ToShortDateString()</span>
+                <span class="col-md-offset-1">Vecka @weekNo</span>
+                <span class="col-md-offset-1">@Model.DateTo.ToShortDateString()</span>
+            </div>
+            <a class="col-md-2 align-right" href="@Url.Action("GetWeekCalendar", new { date = Model.CurrentDate.AddDays(7), status = Status.All})"><span class="glyphicon glyphicon-arrow-right"></span></a>
+            <div class="clearfix"></div>
+        </div>
+    </div>
+
+    @* ReSharper disable once UnknownCssClass *@
+    <div class="calendar-container container">
+
+        <div class="row calendar-row hidden-xs">
+            <div class="col-md-1" style="max-height: 30px;">
+                <div class="col-md-12"><strong>Datum</strong></div>
+            </div>
+            <div class="col-md-11">
+                <div class="col-md-4" style="text-align: center;">
+                    <div class="col-md-12"><strong>10.00 - 13.00</strong></div>
+                </div>
+                <div class="col-md-4 " style="text-align: center;">
+                    <div class="col-md-12"><strong>13.00 - 16.00</strong></div>
+                </div>
+                <div class="col-md-4" style="text-align: center;">
+                    <div class="col-md-12"><strong>16.00 - 19.00</strong></div>
+                </div>
+                <div class="clearfix"></div>
+            </div>
+            <div class="clearfix"></div>
+        </div>
+
+        @for (var i = 0; i < 7; i++)
+        {
+            <div class="row calendar-row">
+            @{
+                var time = Model.DateFrom.AddDays(i);
+                //var booked = Model.Bokings.Any(b => b.BookingDay == time);
+
+                <div class="col-md-1 calendar-row-head"><strong>@LanguageDictionary.Translate[time.DayOfWeek.ToString()]</strong><br /><small>@time.ToShortDateString()</small>
+                @if (time.DayOfWeek == DayOfWeek.Saturday)
+                {
+                    <br /><small style="color: red;">(10.00 - 15.00)</small>
+                }
+                </div>
+                <div class="col-md-11 calendar-row-wraper">
+
+                    @for (var j = 0; j < 3; j++)
+                    {
+                        var bookingsForPartOfTheDay = Model.Bokings.Where(bk => bk.BookingDay == time && bk.PartOfTheDay == j).ToList();
+                        var rowClass = bookingsForPartOfTheDay.Any() ? "row-part-empty" : "";
+                        <div class="col-md-4 container calendar-row-part @rowClass">
+
+                            @for (var p = 1; p <= 2; p++)
+                            {
+                                <div class="col-md-12 ">
+                                    @{
+                                        var thisCarDeliveries = bookingsForPartOfTheDay.Where(hd => hd.Car.Order == p).ToList();
+                                        for (var h = 0; h < thisCarDeliveries.Count; h++)
+                                        {
+                                            var booking = thisCarDeliveries.ToArray()[h];
+
+                                            //var text = p == 1 ? "Hem" : "Trottoar";
+                                            //text += " <strong>" + booking.OrderNbr + "</strong> " + booking.Customer.Name + "<br />" + booking.Customer.Address1 + "<br />" + booking.Customer.PortCode;
+
+                                            var colorClass = booking.Status == Status.New.ToString() ? "partNew" : booking.Status == Status.Done.ToString() ? "partDone" : "partNotDone";
+                                            colorClass = "col-md-2 " + colorClass;
+
+                                            <a class="partbooked @colorClass" href="@Url.Action("Details", new { booking.Id })">@Html.Raw(booking.OrderNbr )
+                                                @if (booking.Type == BookingTypes.Return.ToString())
+                                                 {
+                                                     <span class="glyphicon glyphicon-refresh returnIcon" ></span>
+                                                }
+                                                @if (booking.Type == BookingTypes.Monting.ToString())
+                                                {
+                                                    <span class="glyphicon glyphicon-wrench returnIcon"></span>
+                                                }
+
+                                            </a>
+                                        }
+                                        if (thisCarDeliveries.Count() < 5)
+                                        {
+                                            var dayOfWeek = time.DayOfWeek;
+                                            var latestTimeToBook = DateTime.Today;//.AddHours(15);
+                                            var timeNow = (DateTime.UtcNow - DateTime.Today ).TotalHours;
+
+                                            var disable = (time <= latestTimeToBook);
+                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 14);
+                                            disable = disable || (dayOfWeek == DayOfWeek.Saturday && j != 1);
+                                            disable = disable || (dayOfWeek == DayOfWeek.Saturday && p == 2);
+                                            disable = disable || (dayOfWeek == DayOfWeek.Sunday);
+                                            disable = disable || (time.Month == 12 && time.Day == 25);
+                                            disable = disable || (time.Month == 12 && time.Day == 26);
+                                            disable = disable || (time.Month == 1 && time.Day == 1);
+
+                                            if (disable)
+                                            {
+                                                <div class="col-md-2 partold"></div>
+                                            }
+                                            else
+                                            {
+                                                var delivery = p == 1 ? Delivery.Home : Delivery.SideWalk;
+                                                var glyphiconIcon = p == 1 ? "home" : "road";
+                                                if (dayOfWeek == DayOfWeek.Wednesday)
+                                                {
+                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
+
+                                                }
+                                                else if (isLogistic)
+                                                {
+                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})"><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
+                                                }
+                                                else
+                                                {
+                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("Create", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
+                                                }
+                                            }
+                                        }
+                                        <div class="clearfix"></div>
+                                    }
+                                </div>
+                            }
+                        </div>
+                     }
+                    <div class="clearfix"></div>
+                </div>
+                <div class="clearfix"></div>
+            }
+            </div>
+         }
+    </div>
+
+</div>

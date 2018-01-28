@@ -1,0 +1,28 @@
+﻿@using QT.Authentication
+@model int
+@{
+    ViewBag.Title = "Bekräfta betalningen";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+}
+<style type="text/css">.form-actions { }</style>
+
+<h3>Markera som betald?</h3>
+
+
+@using (Html.BeginForm("ConfirmPayment", "Bokings"))
+{
+    @Html.AntiForgeryToken()
+
+    <div class="form-actions no-color">
+        
+        @*@if (!userIsAdmin)
+        {
+            <label>AD Lösenord</label>
+            <input type="password" name="password" />
+        }*@
+
+        <input type="hidden" name="id" value="@Model"/>
+        <input type="submit" value="Markera som betald" class="btn btn-default"/>
+        @Html.ActionLink("Avbryt", "Index", null, new {@class = "btn btn-primary"})
+    </div>
+}

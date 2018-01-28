@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "MarkNotDone";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+}
+
+
+<h3>Markera som ej klar?</h3>
+@using (Html.BeginForm())
+{
+    @Html.AntiForgeryToken()
+    <dl class="dl-horizontal">
+        <dt>
+        </dt>
+        <dd>
+        </dd>
+        <dt>
+            <label>Antekning</label>
+        </dt>
+        <dd>
+            <textarea class="col-md-offest-1" name="note" rows="5" cols="50"></textarea>
+        </dd>
+        <dt>
+            <input type="submit" value="Ej Klar" class="btn btn-danger" />
+        </dt>
+        <dd>
+            @Html.ActionLink("Avbryt", "Index", null, new { @class = "btn btn-black" })
+        </dd>
+    </dl>
+}

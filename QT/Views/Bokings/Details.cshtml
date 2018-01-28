@@ -1,0 +1,313 @@
+﻿@using QT.Authentication
+@using QT.Models
+@model QT.Boking
+
+@{
+    ViewBag.Title = "Details";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+    var userRole = AdminAuthenticationHelper.Current.GetAdminUserData().Role;
+}
+
+
+<p class="printHide">
+    @if (Model.BookingDay > DateTime.Today)
+    {
+        @Html.ActionLink("Redigera", "Edit", new { id = Model.Id }, new { @class = "btn btn-success" })
+    }
+    @if (Model.BookingDay > DateTime.Today && userRole != Role.xlutz.ToString())
+    {
+        @Html.ActionLink("Ta bort", "Delete", new { id = Model.Id }, new { @class = "btn btn-danger" })
+    }
+    @if (Model.Status == Status.New.ToString() && userRole == Role.qt.ToString())
+    {
+        @Html.ActionLink("Ej Klar", "MarkNotDone", new { id = Model.Id }, new { @class = "btn btn-danger" })
+        @Html.ActionLink("Klar", "MarkAsDone", new { id = Model.Id }, new { @class = "btn btn-success" })
+    }
+    @if (Model.Status == Status.NotDone.ToString() && userRole == Role.qt.ToString())
+    {
+        @Html.ActionLink("Klar", "MarkAsDone", new { id = Model.Id }, new { @class = "btn btn-success" })
+    }
+    @if (Model.Status == Status.Done.ToString() && userRole == Role.qt.ToString())
+    {
+        @Html.ActionLink("Betald", "MarkAsPayed", new { id = Model.Id }, new { @class = "btn btn-success" })
+    }
+    @Html.ActionLink("Tillbaka", "Index", null, new { @class = "btn btn-black col-md-offset-1" })
+    <a href="#" onclick="javascript: window.print();" class="btn btn-info"><span class="glyphicon glyphicon-print" style="color: #000"></span> Orderbekräftelse</a>
+    <a href="~/Content/Statics/LEVERANSVILLKOR Qtransport.pdf" target="_blank" class="btn btn-info"><span class="glyphicon glyphicon-print" style="color: #000"></span> Leveransvillkor</a>
+    <a href="~/Content/Statics/LEVERANSVILLKOR REKLA Qtransport.pdf" target="_blank" class="btn btn-info"><span class="glyphicon glyphicon-print" style="color: #000"></span>Leveransvillkor Retur</a>
+</p>
+
+<div class="well printHide">
+    <h4><strong>@(LanguageDictionary.Translate[Model.WayOfDelivery])</strong> leverans: @Model.Customer.Address1, @Model.Customer.ZipCode @Model.Customer.City </h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayName("Ordernummer")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.OrderNbr)
+        </dd>
+        
+        @if (Model.Type == BookingTypes.Return.ToString())
+        {
+            <dt>
+                @Html.DisplayName("XXXLutz betalar?")
+            </dt>
+            <dd>
+                @(Model.PayBySupplier ? "Ja" : "Nej")
+            </dd>
+            <dt>
+                @Html.DisplayName("Betald")
+            </dt>
+            <dd>
+                @(Model.Payed ? "Ja" : "Nej")
+            </dd>
+        }
+
+        <dt>
+            @Html.DisplayName("Bokningsnummer")
+        </dt>
+        <dd>
+            @(Model.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Datum")
+        </dt>
+
+        <dd>
+            @Model.BookingDay.ToShortDateString()
+        </dd>
+
+        <dt>
+            @Html.DisplayNameFor(model => model.Status)
+        </dt>
+        <dd>
+            @LanguageDictionary.Translate[Model.Status]
+        </dd>
+        
+        <dt>
+            @Html.DisplayName("Tid")
+        </dt>
+        <dd>
+            @{
+                var time = Model.PartOfTheDay == 0 ? "10.00 - 13.00" : Model.PartOfTheDay == 1 ? "13.00 - 16.00" : "16.00 - 19.00";
+            }
+            @time
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Antal extral varor")
+        </dt>
+        <dd>
+            @(Model.NbrItems > 0 ? Model.NbrItems.ToString() : "-")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Bortforsling")
+        </dt>
+        <dd>
+            @(Model.Pickup ? "Ja" : "Nej")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Antal extra varor bortfarsling")
+        </dt>
+        <dd>
+            @(Model.NbrItemsPickup > 0 ? Model.NbrItemsPickup.ToString() : "-")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Bokat av")
+        </dt>
+        <dd>
+            @(Model.CreatedBy.Name + "   /" + Model.CreatedBy.Username + "")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Kund")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Adress")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Address1)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("c/o")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Address2)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Epost")
+        </dt>
+        <dd>
+            @(Model.Customer.Email ?? "---")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Mobil")
+        </dt>
+        <dd>
+            @(Model.Customer.Phone1 ?? "---")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Adress")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Address1)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Distans")
+        </dt>
+        <dd>
+            @(Model.Distance + " km")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Våning")
+        </dt>
+        <dd>
+            @(Model.Customer.Floor ?? "---")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("PortKod")
+        </dt>
+        <dd>
+            @(Model.Customer.PortCode ?? "---")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Leveranssätt")
+        </dt>
+        <dd>
+            @LanguageDictionary.Translate[Model.WayOfDelivery]
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Zon")
+        </dt>
+        <dd>
+            @Model.Zone
+        </dd>
+        <dt>
+            @Html.DisplayName("Type")
+        </dt>
+        <dd>
+            @(LanguageDictionary.Translate[Model.Type])
+        </dd>        
+        <dt>
+            @Html.DisplayName("Leveranskostnad")
+        </dt>
+        <dd>
+            @(Model.DeliveryCost)
+        </dd>
+        <dt>
+            @Html.DisplayName("Anteckning")
+        </dt>
+        <dd>
+            @(Model.Remarks ?? "---")
+        </dd>
+
+    </dl>
+</div>
+
+<div class="well printShow">
+    <h4><strong>Orderbekräftelse</strong></h4>
+    <h4> leverans till: @Model.Customer.Address1, @Model.Customer.ZipCode @Model.Customer.City </h4>
+    <hr />
+
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayName("Ordernummer")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.OrderNbr)
+        </dd>
+        
+        <dt>
+            @Html.DisplayName("Bokningsnummer")
+        </dt>
+        <dd>
+            @(Model.Id)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Datum")
+        </dt>
+        <dd>
+            @Model.BookingDay.ToShortDateString()
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Tid")
+        </dt>
+        <dd>
+            @{
+                time = Model.BookingDay.DayOfWeek == DayOfWeek.Saturday? "10.00 - 15.00" : (Model.PartOfTheDay == 0 ? "10.00 - 13.00" : Model.PartOfTheDay == 1 ? "13.00 - 16.00" : "16.00 - 19.00");
+            }
+            @time
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Antal extral varor")
+        </dt>
+        <dd>
+            @(Model.NbrItems > 0 ? Model.NbrItems.ToString() : "-")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Bortforsling")
+        </dt>
+        <dd>
+            @(Model.Pickup ? "Ja" : "Nej")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Antal extra varor bortfarsling")
+        </dt>
+        <dd>
+            @(Model.NbrItemsPickup > 0 ? Model.NbrItemsPickup.ToString() : "-")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Kund")
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Customer.Name)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Våning")
+        </dt>
+        <dd>
+            @(Model.Customer.Floor ?? "---")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Leveranssätt")
+        </dt>
+        <dd>
+            @LanguageDictionary.Translate[Model.WayOfDelivery]
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Leveranskostnad")
+        </dt>
+        <dd>
+            @(Model.DeliveryCost)
+        </dd>
+
+    </dl>
+</div>

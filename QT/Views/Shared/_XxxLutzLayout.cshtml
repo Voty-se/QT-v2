@@ -1,0 +1,97 @@
+﻿@using QT.Models
+@using QT.Authentication
+@{ 
+    var user = AdminAuthenticationHelper.Current.GetAdminUserData();
+    var isAdmin = user != null && (user.UserName.ToLower() == "admin" || user.Password == "xxxlutz@3399");
+    var crtPages = Request?.Url?.Query.Split('=');
+    var crtPage = Request.Url.ToString().Contains("/Users/") ? "users" :
+        Request.Url.Query == "" ? "index" :
+        Request.Url.ToString().Contains("GetUnpaid") ? "unpaid" :
+        crtPages.Any() ? crtPages[crtPages.Length -1] : "User";
+
+    if (ViewBag.CurrentPageStatus != null && ViewBag.CurrentPageStatus == "Comming")
+    {
+        crtPage = "Comming";
+    }
+
+    var viewBagCtn = new ViewBagContainer() {Error = ViewBag.Error, Info = ViewBag.Info, Message = ViewBag.Message};
+
+    var timeNow = (DateTime.UtcNow - DateTime.Today).TotalHours;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" type="image/png" href="http://qtransportbooking.azurewebsites.net/Content/Images/logo_icon_small.png" />
+    <link rel="icon" type="image/png" href="~/Content/Images/logo_icon_small.png" />
+    <title>QT-Booking</title>
+    <link rel="stylesheet" href="https://ajax.googleapis.com/ajax/libs/jqueryui/1.11.4/themes/smoothness/jquery-ui.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyAhtWPvCIdpvaTwmV35QcpoPn-HyOBwYmE&libraries=places"></script>
+
+    @Styles.Render("~/Content/css")
+        @Scripts.Render("~/bundles/modernizr")
+</head>
+<body>
+    <div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <a class="navbar-brand" href="@Url.Action("Index", "Home")"><img src="~/Content/Images/logo_black.jpg" id="logo" alt="Qtransport" /></a>
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    @if (user?.DisplayName != null)
+                    {
+                        <li class="@(crtPage == "index" ? "active" : "")"><a href="@Url.Action("Index", "Home", new { status = Status.All, skip = 0 })">Bokningar</a></li>
+                        <li class="@(crtPage == Status.New.ToString() ? "active" : "")"><a href="@Url.Action("GetCurrentList", "Bokings", new { date = DateTime.Today, status = Status.New})">Dagens</a></li>
+                        <li class="@(crtPage == "Comming" ? "active" : "")"><a href="@Url.Action("GetMounthList", "Bokings", new { date = DateTime.Today.AddDays(1), status = Status.New})">Kommande</a></li>
+                        <li class="@(crtPage == Status.NotDone.ToString() ? "active" : "")"><a href="@Url.Action("GetMounthList", "Bokings", new { date = DateTime.Today, status = Status.NotDone})">Ej klar</a></li>
+                        <li class="@(crtPage == Status.Done.ToString() ? "active" : "")"><a href="@Url.Action("GetMounthList", "Bokings", new { date = DateTime.Today, status = Status.Done})">Klar</a></li>
+                        if (isAdmin)
+                        {
+                            <li class="@(crtPage == "unpaid" ? "active" : "")"><a href="@Url.Action("GetUnpaid", "Bokings", new { date = DateTime.Today, status = Status.Done })">För betalning</a></li>
+                        }
+                        if (user.Role == Role.qt.ToString())
+                        {
+                            <li role="presentation" class="@(crtPage == "mybookings" ? "active" : "")"><a href="@Url.Action("MyBokings", "Bokings", new { id = user.Id })">Mina bokningar</a></li>
+                        }
+                        <li class="@(crtPage == "users" ? "active" : "")"><a href="@Url.Action("Details", "Users", new { id = user.Id })"><span class="glyphicon glyphicon-user"></span>@user.DisplayName</a></li>
+                        <li><a href="@Url.Action("Logout", "Users")"><span class="glyphicon glyphicon-log-out"></span>Logga ut</a></li>
+                        <li><a onclick="ShowTimeList();"><span class="glyphicon glyphicon-time" id="showTime" style="display: none;"></span></a>
+                            <ul id="timeShow" style="display: none; color: #fff;">
+                                <li>Now: @DateTime.Now</li>
+                                <li>Today: @DateTime.Today</li>
+                                <li>UTC Now: @DateTime.UtcNow</li>
+                                <li>Hour Now: @timeNow</li>
+                            </ul>
+                        </li>
+                    }
+                </ul>
+            </div>
+        </div>
+    </div>
+
+    @{ Html.RenderPartial("Error", viewBagCtn); }
+
+    <div class="container body-content">
+        @RenderBody()
+    </div>
+
+    <footer class="printHide">
+        <hr />
+        <p>&copy; @DateTime.Now.Year - Voty AB - info@voty.se</p>
+    </footer>
+
+            @Scripts.Render("~/bundles/jquery")
+            @Scripts.Render("~/bundles/jquery-ui")
+        @Scripts.Render("~/bundles/main")
+    @Scripts.Render("~/bundles/bootstrap")
+    @RenderSection("scripts", required: false)
+</body>
+</html>

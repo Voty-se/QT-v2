@@ -1,0 +1,95 @@
+﻿@using QT.Models
+@model Boking
+
+@{
+    ViewBag.Title = "Radera bokning";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+}
+<style type="text/css">.no-color { }</style>
+
+<h2>Delete</h2>
+
+<h3>Är du säker du vill tabort bokningen?</h3>
+<div>
+    <h4>Boking</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayName("Datum")
+        </dt>
+
+        <dd>
+            @(Model.BookingDay.ToShortDateString())
+        </dd>
+        <dt>
+            @Html.DisplayName("Tid")
+        </dt>
+
+        <dd>
+            @(Model.PartOfTheDay == 0 ? "10.00-13.00" : Model.PartOfTheDay == 1 ? "13.00-16.00" : "16.00-19.00")
+        </dd>
+        
+        <dt>
+            @Html.DisplayName("Status")
+        </dt>
+
+        <dd>
+            @(LanguageDictionary.Translate[Model.Status])
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Makulerad")
+        </dt>
+
+        <dd>
+            @(Model.Canceled ? "Ja" : "Nej")
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Bokat av")
+        </dt>
+
+        <dd>
+            @Html.DisplayFor(model => model.CreatedBy.Username)
+        </dd>
+
+        <dt>
+            @Html.DisplayName("Ordernummer")
+        </dt>
+
+        <dd>
+            @(Model.OrderNbr)
+        </dd>
+        <dt>
+            @Html.DisplayName("Leveranssätt")
+        </dt>
+
+        <dd>
+            @(Model.Type)
+        </dd>
+        <dt>
+            @Html.DisplayName("Betalning")
+        </dt>
+
+        <dd>
+            @(Model.Zone)
+        </dd>
+        <dt>
+            @Html.DisplayName("Adress")
+        </dt>
+
+        <dd>
+            @(Model.Customer.Address1)
+        </dd>
+
+    </dl>
+
+    @using (Html.BeginForm()) {
+        @Html.AntiForgeryToken()
+
+        <div class="form-actions no-color">
+            <input type="submit" value="Delete" class="btn btn-default" />   
+            @Html.ActionLink("Avbryt", "Index", null, new { @class = "btn btn-default" })
+        </div>
+    }
+</div>

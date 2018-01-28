@@ -1,0 +1,28 @@
+﻿@model QT.Models.ViewBagContainer
+
+@if (!string.IsNullOrEmpty(Model.Error))
+{
+    <div class="alert alert-danger" role="alert" style="display: block;">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        @Model.Error
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Info))
+{
+    <div class="alert alert-info" role="alert" style="display: block;">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        @Model.Info
+    </div>
+}
+
+@if (!string.IsNullOrEmpty(Model.Message))
+{
+    <div class="alert alert-success" role="alert" style="display: block;">
+        <span class="glyphicon glyphicon-exclamation-sign" aria-hidden="true"></span>
+        <span class="sr-only">Error:</span>
+        @Model.Message
+    </div>
+}

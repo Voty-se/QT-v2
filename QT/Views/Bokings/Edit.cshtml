@@ -1,0 +1,257 @@
+﻿@using QT.Models
+@model Boking
+
+@{
+    ViewBag.Title = "Edit";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+    var deliveryTime = Model.BookingDay.ToShortDateString() + " " + (Model.PartOfTheDay == 0
+        ? "10.00 - 13.00"
+        : (Model.PartOfTheDay == 1 ? "13.00 - 16.00" : "16.00 - 19.00"));
+
+    //var nbrItemsList = new SelectList(new List<int>() {0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10});
+    var nbrsList = new List<SelectListItem> { new SelectListItem() { Text = "-", Value = "0" } };
+    for (var i = 1; i < 11; i++)
+    {
+        nbrsList.Add(new SelectListItem() { Text = i.ToString(), Value = i.ToString() });
+    }
+
+    var delivery = LanguageDictionary.Translate[Model.WayOfDelivery];
+
+    var paymentList = Zones.ZoneList(false, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek);
+
+    var showPickupItems = Model.Pickup ? "block" : "none";
+}
+
+
+@using (Html.BeginForm("Edit", "Bokings", FormMethod.Post, new { @class = "col-md-6", id = "fromCreateOrder" }))
+{
+    @Html.AntiForgeryToken()
+
+    @Html.HiddenFor(model => model.Id)
+    @Html.HiddenFor(model => model.Type)
+    @Html.HiddenFor(model => model.BookingDay)
+    @Html.HiddenFor(model => model.PartOfTheDay)
+    @Html.HiddenFor(model => model.WayOfDelivery)
+    @Html.HiddenFor(model => model.PayBySupplier)
+    @*@Html.HiddenFor(model => model.NbrItems)*@
+    @*@Html.HiddenFor(model => model.NbrItemsPickup)*@
+    @*@Html.HiddenFor(model => model.Remarks)*@
+    @Html.HiddenFor(model => model.Status)
+
+    <div class="form-horizontal well">
+        <h4>Leveranstyp:   <strong>@delivery</strong> </h4>
+        <hr />
+        <h4>Leveranstid:   <strong>@deliveryTime</strong> </h4>
+        <hr />
+
+        @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.OrderNbr, "OrderNr", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.OrderNbr, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.OrderNbr, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Name, "Kundnamn", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Name, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Name, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Email, "Epost", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Email, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Email, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Phone1, "Mobilnummer", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Phone1, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Phone1, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div id="pac-container" class="form-group">
+            @Html.Label("Sök adress", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                <input id="pac-input" class="form-control" type="text" placeholder="Sök adressen">
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Address2, "c/o", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Address2, $"", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Address2, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Address1, "Adress", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Address1, $"", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Address1, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.ZipCode, "Postnummer", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.ZipCode, $"", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.ZipCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.City, "Stad", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.City, $"", new { htmlAttributes = new { @class = "form-control col-md-10" } })
+                @*<a class="btn btn-default col-md-4" onclick="calculateDistanceMultipleRoutes();">Räkna distans</a>*@
+                @Html.ValidationMessageFor(model => model.Customer.City, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Distance, "Distans i km", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Distance, $"0", new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Distance, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.Floor, "Våning", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.Floor, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.Floor, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        <div class="form-group">
+            @Html.LabelFor(model => model.Customer.PortCode, "Portkod", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.EditorFor(model => model.Customer.PortCode, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.Customer.PortCode, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.NbrItems, "Extra artikel att leverara", new { @id = "NbrItemsLable", @class = "control-label col-md-3" })
+            <div class="col-md-2">
+                @Html.DropDownListFor(model => model.NbrItems, nbrsList, new { @class = "form-control" })
+                @Html.ValidationMessageFor(model => model.NbrItems, "", new { @class = "text-danger" })
+            </div>
+        </div>
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.NbrItems, "Antal varor", new { @id = "NbrItemsLable", @class = "control-label col-md-3 col-md-offset-2", @style = "display:none;" })
+                <div class="col-md-2">
+                    @Html.EditorFor(model => model.NbrItems, $"1", new { htmlAttributes = new { @class = "form-control", @style = "display:none;" } })
+                    @Html.ValidationMessageFor(model => model.NbrItems, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.OrderAmount, "Belopp på order", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.EditorFor(model => model.OrderAmount, $"0", new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.OrderAmount, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Pickup, "Bortforsling", new { @class = "control-label col-md-2" })
+            <div class="col-md-1">
+                @Html.CheckBoxFor(model => model.Pickup, new { htmlAttributes = new { @class = "form-control", disabled = true } })
+                @Html.ValidationMessageFor(model => model.Pickup, "", new { @class = "text-danger" })
+            </div>
+            @Html.LabelFor(model => model.NbrItemsPickup, "Extra artikel att bortforsla", new { @id = "NbrItemsPickupLable", @class = "control-label col-md-3", @style = $"display:{showPickupItems};" })
+            <div class="col-md-2">
+                @Html.DropDownListFor(model => model.NbrItemsPickup, nbrsList, new { @class = "form-control", @style = $"display:{showPickupItems};" })
+                @Html.ValidationMessageFor(model => model.NbrItemsPickup, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.WayOfDelivery, "Leveranssätt", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.DropDownListFor(model => model.WayOfDelivery, deliveryList, new { htmlAttributes = new { @class = "form-control", @disabled = true} })
+                    @Html.ValidationMessageFor(model => model.WayOfDelivery, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        @*<div class="form-group">
+                @Html.LabelFor(model => model.PayBySupplier, "XXXLutz betalar för leverans", new { @class = "control-label col-md-5" })
+                <div class="col-md-5">
+                    @Html.CheckBoxFor(model => model.PayBySupplier, new { htmlAttributes = new { @class = "form-control" } })
+                    @Html.ValidationMessageFor(model => model.PayBySupplier, "", new { @class = "text-danger" })
+                </div>
+            </div>*@
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.Zone, "Leveranszon", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.DropDownListFor(model => model.Zone, paymentList, new { htmlAttributes = new { @class = "form-control", @disabled = true } })
+                @Html.ValidationMessageFor(model => model.Zone, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(model => model.DeliveryCost, "Pris", new { @class = "control-label col-md-2" })
+            <div class="col-md-10">
+                @Html.TextArea("DeliveryCostSummary", null, 5, 40, new { htmlAttributes = new { @class = "form-control" } })
+                @Html.ValidationMessageFor(model => model.DeliveryCost, "", new { @class = "text-danger" })
+            </div>
+        </div>
+
+        <div class="form-group">
+                @Html.LabelFor(model => model.Remarks, "Extra info", new { @class = "control-label col-md-2" })
+                <div class="col-md-10">
+                    @Html.TextAreaFor(model => model.Remarks, 10, 40, new { @class = "form-control", @rows = 10, @cols = 40 })
+                </div>
+            </div>
+
+        <div class="form-group">
+            <div class="col-md-offset-2 col-md-10">
+                <input type="submit" value="Spara" class="col-md-4 btn btn-primary" />
+            </div>
+            <div>
+                @Html.ActionLink("Avbryt", "Index", null, new { @class = "btn btn-primary" })
+            </div>
+        </div>
+    </div>
+}
+
+<div class="col-md-6">
+    @*<div id="map" >
+            <iframe width="600" height="450" frameborder="0" style="border: 0" src="https://www.google.com/maps/embed/v1/directions?key=AIzaSyAbHqUFwRAyNX7xezF1qgSEzVvcQ042mLs&origin=Cederströmsgatan+2,212+39+Malmö,sweden&destination=Cederströmsgatan+2,212+39+Malmö,sweden&mode=driving" allowfullscreen></iframe>
+        </div>*@
+    <img src="~/Content/Images/map.PNG" usemap="#image-map">
+
+    <map name="image-map">
+        <area target="#Zone" onclick="selectZone(0);" alt="zon1" title="zon1" coords="168,432,185,422,195,427,208,426,211,409,215,398,231,402,248,409,262,426,276,427,284,430,294,435,306,441,313,445,320,449,327,456,335,460,341,468,343,474,345,481,330,489,338,487,323,496,323,508,318,514,308,523,308,530,308,536,304,541,298,546,294,559,296,568,300,578,297,590,296,599,302,607,305,614,292,625,285,631,270,636,251,636,217,631,174,618,144,606,117,581,181,619,106,612" shape="poly">
+        <area target="#Zone" onclick="selectZone(1);" alt="zon2" title="zon2" coords="119,376,53,217,117,179,132,220,162,213,178,191,180,182,216,176,243,193,258,186,266,227,288,239,303,247,330,253,355,281,366,291,366,302,360,308,357,318,358,325,377,323,393,337,405,354,419,356,428,347,438,354,439,368,433,382,436,398,448,413,464,425,478,428,480,419,488,426,497,437,504,447,492,451,481,475,480,499,491,502,504,509,502,530,494,553,481,569,489,578,498,580,499,591,520,613,492,646,453,599,374,602,329,614,309,616,300,596,296,565,300,543,310,530,318,516,339,482,343,464,315,445,285,429,263,422,238,406,216,393,204,423,162,431,138,418" shape="poly">
+        <area target="#Zone" onclick="selectZone(2);" alt="zone3" title="zone3" coords="521,613,506,595,485,571,500,553,508,519,482,499,478,485,489,461,503,446,486,433,477,427,458,423,442,405,431,389,435,364,437,349,421,350,404,357,393,332,383,321,360,322,359,312,371,299,357,282,332,253,293,246,265,226,264,200,258,185,242,193,220,180,203,177,190,180,175,193,169,211,133,229,124,191,112,185,88,198,54,217,22,131,69,78,98,42,142,47,178,73,254,105,317,75,382,77,475,55,494,28,529,37,599,60,622,67,641,258,530,395,546,473,567,552,542,584" shape="poly">
+    </map>
+
+    <img alt="priser" src="~/Content/Images/DeliveryPrices.jpg" width="100%" />
+</div>
+
+
+<div>
+    @Html.ActionLink("Tillbaka", "Index")
+</div>
+
+@section scripts {
+    <script type="text/javascript">
+        $(document).ready(function() {
+            getPrice();
+            $("#Distance").rules("remove", "number");
+        });
+    </script>
+}

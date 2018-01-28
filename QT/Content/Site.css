@@ -1,0 +1,408 @@
+﻿body {
+    padding-top: 70px;
+    padding-bottom: 20px;
+    margin: 0;
+    padding-left: 0;
+    padding-right: 0;
+    background-color:#ebebeb;
+}
+
+textarea {
+    min-height: 60px;
+}
+.box {
+    -ms-border-radius: 2px;
+    border-radius: 2px;
+    padding-bottom: 6px;
+    box-shadow: 0 2px 2px 0 #000000, 
+                0 3px 1px -2px #000000, 
+                0 1px 5px 0 #000000;
+    box-shadow: 0 2px 2px 0 rgba(0, 0, 0, 0.14), 
+        0 3px 1px -2px rgba(0, 0, 0, 0.2), 
+        0 1px 5px 0 rgba(0, 0, 0, 0.12);
+}
+
+/* Set padding to keep content from hitting the edges */
+.body-content {
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.navbar-fixed-top {
+    /*border-width: 0;*/
+    border-bottom-width: 5px;
+    border-bottom-color: #fff;
+    padding: 2px 2px 0 2px;
+}
+.nav li {
+    padding: 15px 5px 0 5px;
+    margin-top: 8px;
+}
+.nav li a {
+    /*font-family: monospace;*/
+    font-size: 13px;
+    padding: 7px 10px 2px 10px;
+}
+    .nav li a:hover {
+        background-color: grey !important;
+    border-radius: 10px 10px 0 0;
+    }
+.nav li.active a {
+    color: #000 !important;
+    background-color: #fff !important;
+    border-radius: 10px 10px 0 0;
+    /*top: 10px;
+    padding-top: 6px;        
+    box-shadow: inset 0px 0px 15px 0px;*/
+}
+@media (min-width: 768px) {
+    .container {
+        max-width: 1200px;
+    }
+}
+
+footer {
+    position: relative;
+    top: 20px;
+    padding: 20px 30px 40px 30px; 
+    margin: 0;
+    background-color: #ebebeb;
+}
+
+.well {    
+    overflow: auto;
+}
+/* Override the default bootstrap behavior where horizontal description lists 
+   will truncate terms that are too long to fit in the left column 
+*/
+.dl-horizontal dt {
+    white-space: normal;
+    text-align: left !important;
+}
+
+/* Set width on the form input elements since they're 100% wide by default */
+input,
+select,
+textarea {
+    max-width: 280px;
+}
+
+  .form-horizontal .control-label {
+    text-align: left;
+  }
+
+  #fromCreateOrder .control-label {      
+    font-size: 11px;
+    font-weight: 600;
+    padding: 5px 5px;
+  }
+  #fromCreateOrder .form-control, 
+  #fromCreateOrder select {      
+    height: 25px;
+    padding: 0 12px;
+    font-size: 12px;
+  }
+
+@media (min-width: 768px) {
+  .form-horizontal .control-label {
+    text-align: left;
+  }
+}
+
+
+.btn {
+    /*color: #f7ca0d;*/
+    border-color: #f7ca0d;
+    padding: 3px 5px;
+    margin-bottom: 0;
+    font-size: 11px;
+}
+
+.btn-black {
+    color: #ffffff;
+    background-color: #060709;
+    background-color: rgba(6, 7, 9, 0.75);
+}
+
+.btn-black:hover{
+    color: #ffffff;
+    background-color: #3276b1;
+    border-color: #285e8e;
+
+}
+select {
+    display: block;
+    width: 100%;
+    height: 34px;
+    padding: 6px 12px;
+    font-size: 14px;
+    line-height: 1.428571429;
+    color: #555555;
+    vertical-align: middle;
+    background-color: #ffffff;
+    border: 1px solid #cccccc;
+    border-radius: 4px;
+    -webkit-box-shadow: inset 0 1px 1px #000000;
+    -webkit-box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    box-shadow: inset 0 1px 1px #000000;
+    box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075);
+    -webkit-transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+    transition: border-color ease-in-out 0.15s, box-shadow ease-in-out 0.15s;
+}
+
+.dl-horizontal {
+    box-shadow: 1px 1px 5px 1px;width: 100%;
+    overflow: hidden;
+    padding: 0;
+    margin: 0 0 30px 0;
+}
+    .dl-horizontal dt {
+        float: left;
+        width: 30%;
+        padding: 10px 20px;
+        margin: 0;
+        font-size: 12px;
+    }
+    .dl-horizontal dd {
+          float: left;
+          width: 70%;
+          padding: 10px 20px;
+          margin: 0;
+        font-size: 12px;
+    }
+    /*.dl-horizontal dt:nth-of-type(2n+1), .dl-horizontal dd:nth-of-type(2n+1) {
+        background-color: #dbb30d;
+        background-color: rgba(219, 179, 13, 0.47);
+    }*/
+
+/*.table {
+}*/
+
+    .table tr:nth-child(2n) {
+        background-color: beige;
+    }
+        .table tr th {
+            font-size: 12px;
+        }
+        .table tr td {
+            font-size: 12px;
+        }
+
+.glyphicon{
+    padding-right: 3px;
+}
+.navbar-fixed-top{
+    background-color: #060709;
+}
+.navbar-brand{
+    padding: 5px;
+}
+.navbar-inverse .navbar-nav > li > a{
+    color: white;
+}
+
+
+/*-------------------------------------------------------------------------------------------*/
+
+.align-right
+{
+    text-align: right;
+}
+.align-left {
+    text-align: left;
+}
+
+#logo{
+    width: 250px;
+    margin-right: 25px;
+    margin-top: 5px;
+}
+#calendar{
+    padding: 0;
+}
+#calendarTopBar{
+    padding: 0;
+    background-color: #000;
+    color: #f7ca0d;
+    border: solid 1px grey;
+}
+
+#calendarTopBar a {
+    padding: 10px;
+}
+#calendarTopBarDate {
+    text-align: center;
+    padding: 10px;
+}
+.calendar-row {
+    background-color: white;
+    padding: 0;    
+    box-shadow: 1px 1px 5px 1px;
+    margin: 10px -10px 0 -10px;
+    background-color: #f7ca0d;
+}
+.calendar-row-wraper {
+    padding: 0;
+    margin: 0;
+    background-color: #fff;
+}
+.calendar-row-head {
+    color: #3e1a1a;
+    padding: 5px 10px;
+}
+
+.newBookingIcon {
+    width: 25px;
+    height: 25px;
+    font-size: 20px;
+    text-align: center;
+    vertical-align: middle;
+}
+.newBookingIconPlus {
+    width: 15px;
+    height: 15px;
+    font-size: 10px;
+    position: relative;
+    top: 4px;
+    left: 5px;
+}
+
+.partnotbooked:hover .newBookingIcon,
+.partnotbooked:hover .newBookingIconPlus {
+    color: #087707;
+  transform: scaleY(1.2);
+}
+
+.calendar-row-part .returnIcon {
+    position: absolute;
+    top: 50px;
+    right: 2px;
+    color: #fff;
+    width: 15px;
+    height: 15px;
+    font-size: 14px;
+    text-align: center;
+}
+
+.calendar-row-part {
+    padding: 0;
+    text-align: center;
+    font-size: 8px;
+}
+    .calendar-row-part .partbooked,
+    .calendar-row-part .partnotbooked {
+        display: block;
+        /*width: 90%;*/
+        margin-bottom: 7px;
+        margin-left: 3px;
+        margin-top: 2px;
+        padding: 5px;
+        cursor: pointer;
+        border-radius: 0px;
+        min-height: 70px;
+        vertical-align: middle;
+    }
+    .calendar-row-part .row-part-empty {
+        background-color: #ebebeb;
+        min-height: 90px;
+        border: solid 1px #7b5d37;
+    }
+
+@media (max-width: 468px) {
+    .calendar-row-part {
+        border: 1px solid;
+        padding: 15px;
+    }
+}
+
+.calendar-row-part:hover {
+}
+.calendar-row-part .partbooked {
+    font-family: cursive;
+    box-shadow: 2px 2px 2px 2px;
+    color: #fff !important;
+    box-shadow: 1px 1px 1px 1px rgba(0, 0, 0, 0.68);
+    margin-right: 1px;
+    font-size: 18px;
+    font-family: arial;
+    width: 100px;
+    height: 30px;
+    }
+     .calendar-row-part .partbooked:hover {
+         text-decoration: none;
+  /*transform: scaleY(1.1);
+  transform-origin: left;
+  transition:0.3s;
+    height: 65px;
+    width: 60px;
+    font-size: 8.5px;*/
+    /*position: relative;
+    top: -20px;*/
+    opacity: 1 !important;
+   }
+    .calendar-row-part .partbooked.partNew {
+    background-color: #4e4b4b;
+    background-color: rgba(78, 75, 75, 1);
+    }
+
+/*.calendar-row-part .partbooked.partNew:hover {
+        background-color: #4e4b4b;
+        background-color: rgba(78, 75, 75, 0.85);
+}*/
+
+.calendar-row-part .partbooked.partDone {
+    background-color:#106510;
+    background-color:rgba(16, 101, 16, 1);
+}
+
+/*.calendar-row-part .partbooked.partDone:hover {
+    background-color:#106510;
+    background-color:rgba(16, 101, 16, 0.85);
+}*/
+
+.calendar-row-part .partbooked.partNotDone {
+    background-color: #cc2929;
+    background-color: rgba(204, 41, 41, 1);
+}
+
+/*.calendar-row-part .partbooked.partNotDone:hover {
+    background-color: #cc2929;
+    background-color: rgba(204, 41, 41, 0.85);
+}*/
+
+.calendar-row-part .partnotbooked {
+    color: #000;
+    text-decoration: none;
+    }
+        .calendar-row-part .partnotbooked:hover {
+            /*color: #fff;*/
+            /*background-color: rgba(16, 101, 16, 0.92);*/
+        }
+.calendar-row-part .partold {
+    min-height: 40px;
+}
+.lable-light {
+    font-size: 12px;
+}
+
+.navbar-nav li a:focus {
+    background-color: grey;
+    color: #000;
+}
+
+.printShow {
+    display: none;
+}
+
+@media print {
+    .printHide, a[href]:after {
+        display: none !important;
+    }
+    .printShow {
+        display: block;
+    }
+}
+@page {
+    size: auto;   /* auto is the initial value */
+    margin: 0;  /* this affects the margin in the printer settings */
+}

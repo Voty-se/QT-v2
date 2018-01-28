@@ -1,0 +1,43 @@
+﻿using System;
+using System.Net;
+using System.Net.Mail;
+using System.Net.Mime;
+using System.Web.Hosting;
+
+namespace QT.Helpers
+{
+    public static class MailHandler
+    {
+        public static bool SendEmail(string message, string to, string subject, bool attachement = false, string attachmentName = "LEVERANSVILLKOR Qtransport")
+        {
+            try
+            {
+                var mailMessage = new MailMessage("qtransport@voty.se", to)
+                {
+                    Body = message,
+                    Subject = subject
+                };
+
+                if (attachement)
+                    mailMessage.Attachments.Add(
+                        new Attachment(HostingEnvironment.MapPath($@"~/Content/Statics/{attachmentName}.pdf"), MediaTypeNames.Application.Pdf));
+
+                var client = new SmtpClient()
+                {
+                    Host = "send.one.com",
+                    Port = 587,
+                    EnableSsl = true,
+                    Credentials = new NetworkCredential("qtransport@voty.se", "Str3355Xltz")
+                };
+
+                client.Send(mailMessage);
+
+                return true;
+            }
+            catch (Exception e)
+            {
+                return false;
+            }
+        }
+    }
+}

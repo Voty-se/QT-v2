@@ -1,0 +1,132 @@
+﻿@using QT.Models
+@using QT.Authentication
+@model QT.Models.Month
+
+@{
+    ViewBag.Title = "Obetald";
+    Layout = "~/Views/Shared/_XxxLutzLayout.cshtml";
+
+    var userRole = AdminAuthenticationHelper.Current.GetAdminUserData().Role;
+    var status = (Status)(ViewBag.Status ?? Status.All);
+    var from = (DateTime)(ViewBag.FromDate ?? Model.FromDate);
+    var to = (DateTime)(ViewBag.ToDate ?? Model.ToDate);
+
+    var total = Model.GetSumBookings();
+
+    Model.Bokings.Sort((a, b) => a.BookingDay.CompareTo(b.BookingDay));
+}
+
+<div class="well">Belopp att betala: <strong>@(total)kr</strong></div>
+
+<div class="row well">
+    <div class="col-md-8 col-xs-12">
+
+        <form method="get" action="@Url.Action("GetUnpaidInterval", "Bokings")">
+            <div class="form-horizontal">
+                @Html.ValidationSummary(true, "", new { @class = "text-danger" })
+
+                <div class="form-group col-md-5">
+                    @Html.Label("Från", htmlAttributes: new { @class = "control-label col-md-2 lable-light" })
+                    <div class="col-md-10">
+                        <input class="form-control" id="datepickerfrom" type="text" name="fromDate" value="@from.ToShortDateString()" />
+                    </div>
+                </div>
+                <div class="form-group col-md-5">
+                    @Html.Label("Till", htmlAttributes: new { @class = "control-label col-md-2 lable-light" })
+                    <div class="col-md-10">
+                        <input class="form-control" id="datepickerto" type="text" name="toDate" value="@to.ToShortDateString()" />
+                    </div>
+                </div>
+
+                <div class="form-group col-md-2">
+                    <div class="col-md-12">
+                        <input type="submit" value="Visa" class="btn btn-black" />
+                    </div>
+                </div>
+            </div>
+        </form>
+    </div>
+    <div class="col-md-4 col-xs-12">
+        <div class="col-md-12">
+            <a class="col-md-offset-1" href="@Url.Action("GetUnpaid", "Bokings", new { date = Model.CurrentDate.AddMonths(-1), status = status })"><span class="glyphicon glyphicon-arrow-left"></span></a>
+            <span class="col-md-offset-1">@Model.FromDate.ToShortDateString()</span><span class="col-md-offset-1">@Model.ToDate.ToShortDateString()</span>
+            <a class="col-md-offset-1" href="@Url.Action("GetUnpaid", "Bokings", new { date = Model.CurrentDate.AddMonths(1), status = status })"><span class="glyphicon glyphicon-arrow-right"></span></a>
+        </div>
+    </div>
+    <div class="clearfix"></div>
+    @*</div>*@
+
+    <table class="table">
+       <tr>
+    <th>
+        @Html.DisplayName("Order")
+    </th>
+    <th>
+        @Html.DisplayName("Datum")
+    </th>
+    <th>
+        @Html.DisplayName("Tid")
+    </th>
+    <th>
+        @Html.DisplayName("Betalning")
+    </th>
+    <th>
+        @Html.DisplayName("Status")
+    </th>
+    <th>
+        @Html.DisplayName("Bokad av")
+    </th>
+    <th>
+        @Html.DisplayName("Leveranssätt")
+    </th>
+    <th>
+        @Html.DisplayName("Typ")
+    </th>
+    <th>
+        @Html.DisplayName("Summa")
+    </th>
+    <th></th>
+</tr>
+
+@foreach (var item in Model.Bokings)
+{
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.OrderNbr)
+        </td>
+        <td>
+            @item.BookingDay.ToShortDateString()
+        </td>
+        <td>
+            @(item.PartOfTheDay == 0 ? "10.00 - 13.00" : item.PartOfTheDay == 1 ? "13.00 - 16.00" : "16.00 - 19.00")
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => item.Zone)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => LanguageDictionary.Translate[item.Status.ToString()])
+        </td>
+        <td>
+            @(item.CreatedBy.Name + " " + item.CreatedBy.Lastname)
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => LanguageDictionary.Translate[item.WayOfDelivery.ToString()])
+        </td>
+        <td>
+            @Html.DisplayFor(modelItem => LanguageDictionary.Translate[item.Type])
+        </td>
+        <td>
+            @(item.DeliveryCost)
+        </td>
+        @if (!item.Payed && userRole == Role.xlutz.ToString())
+        {
+            <td>
+                @Html.ActionLink("Markera som betald", "MarkAsPayed", new { id = item.Id }, new { @class = "btn btn-success" })
+            </td>
+        }
+    </tr>
+}
+
+</table>
+
+</div>
