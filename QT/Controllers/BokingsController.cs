@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Data.Entity;
+using System.Data.Entity.Migrations;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -327,7 +328,7 @@ namespace QT.Controllers
         }
 
         // GET: Bokings/Create
-        [VotyAuthorize(Role.xlutz, Role.Administrator)]
+        [VotyAuthorize(Role.xlutz, Role.LogisticAdministrator)]
         public ActionResult CreateMonting(DateTime time, int part, Delivery delivery)
         {
             Session["products"] = new List<StandarProduct>();
@@ -521,9 +522,12 @@ namespace QT.Controllers
         public ActionResult RemoveProductbyId(int productId)
         {
             var productList = (List<StandarProduct>)Session["products"];
-            var product = productList.FirstOrDefault(p => p.Id == productId);
+            if (productId >= 0)
+            {
+                var product = productList.FirstOrDefault(p => p.Id == productId);
 
-            productList.Remove(product);
+                productList.Remove(product);
+            }
             Session["products"] = productList;
 
             return PartialView("ProductList", productList);
@@ -540,7 +544,9 @@ namespace QT.Controllers
                           $"Adress: {boking.Customer.Address1}\n\n\n";
 
             if (boking.Type != BookingTypes.Return.ToString())
-                message += $"{GetPriceZone(boking, Leverera)}\n\n";
+                message += boking.Type == BookingTypes.Monting.ToString()
+                    ? $"{GetPriceMonting()}\n\ns"
+                    : $"{GetPriceZone(boking, Leverera)}\n\n";
 
             message += $"Mvh Q Transport";
 
@@ -667,6 +673,17 @@ namespace QT.Controllers
 
             if (boking.Type == BookingTypes.Return.ToString())
                 return View("EditReturn", boking);
+            else if (boking.Type == BookingTypes.Monting.ToString())
+            {
+                Session["products"] = new List<StandarProduct>(boking.Product.Select(p => new StandarProduct
+                {
+                    Name = p.Name,
+                    Price = decimal.Parse(p.Price),
+                    Text = p.Type,
+                    Time = int.Parse(p.Quantity)
+                }));
+                return View("EditMonting", boking);
+            }
             else
                 boking.Remarks = boking.Remarks ?? "";
 
@@ -727,6 +744,7 @@ namespace QT.Controllers
             }
             return View(boking);
         }
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         [VotyAuthorize]
@@ -780,6 +798,76 @@ namespace QT.Controllers
             return View(boking);
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        [VotyAuthorize]
+        public ActionResult EditMonting(Boking boking)
+        {
+            if (ModelState.IsValid)
+            {
+                if (boking.BookingDay >= DateTime.Today)
+                {
+
+                    var booking = db.BokingSet.Find(boking.Id);
+
+                    var cpt = booking.Product.Count;
+                    for (var i = cpt - 1; i >= 0; i--)
+                    {
+                       var prod = db.ProductSet.Find(booking.Product.ToList()[i].Id);
+                        if (prod != null)
+                            db.ProductSet.Remove(prod);
+                        db.SaveChanges();
+                    }
+                    booking.Product.Clear();
+                    db.SaveChanges();
+
+                    //booking.Product = new List<Product>();
+                    booking = db.BokingSet.Find(boking.Id);
+                    booking.NbrItems = boking.NbrItems;
+                    booking.Customer = boking.Customer;
+                    booking.Distance = boking.Distance;
+                    booking.NbrItemsPickup = boking.NbrItemsPickup;
+                    booking.OrderAmount = boking.OrderAmount;
+                    booking.OrderNbr = boking.OrderNbr;
+                    booking.Pickup = boking.Pickup;
+                    booking.Remarks = boking.Remarks ?? "";
+                    booking.WayOfDelivery = boking.WayOfDelivery;
+                    booking.Zone = boking.Zone;
+                    booking.Type = boking.Type;
+
+                    var productList = (List<StandarProduct>)Session["products"];
+                    booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+
+                    if (productList != null && productList.Any())
+                        booking.Product = productList.Select(p => new Product
+                        {
+                            Name = p.Name,
+                            Price = p.Price.ToString(),
+                            Type = p.Text,
+                            Quantity = p.Time.ToString()
+                        }).ToList();
+
+                    booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+
+                    db.BokingSet.AddOrUpdate(booking);
+                    try
+                    {
+                        db.SaveChanges();
+                        return RedirectToAction("Index");
+                    }
+                    catch (Exception e)
+                    {
+                        ViewBag.Error = "Validation error.";
+                    }
+                }
+                else
+                {
+                    ViewBag.Error = "Nya datummet ska vara f.o.m idag.";
+                }
+            }
+            return View(boking);
+        }
+
         // GET: Bokings/Delete/5
         [VotyAuthorize(Role.LogisticAdministrator, Role.Administrator, Role.qt)]
         public ActionResult Delete(int? id)
@@ -808,6 +896,18 @@ namespace QT.Controllers
                 ViewBag.Error = "Får ej raderas. Bara framtida bokningar får raderas.";
                 return View();
             }
+
+            var cpt = boking.Product.Count;
+            for (var i = cpt - 1; i >= 0; i--)
+            {
+                var prod = db.ProductSet.Find(boking.Product.ToList()[i].Id);
+                if (prod != null)
+                    db.ProductSet.Remove(prod);
+                db.SaveChanges();
+            }
+            boking.Product.Clear();
+            db.SaveChanges();
+
             db.BokingSet.Remove(boking);
             db.SaveChanges();
             return RedirectToAction("Index");

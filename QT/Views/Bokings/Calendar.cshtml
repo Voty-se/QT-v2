@@ -76,6 +76,7 @@
 
                             @for (var p = 1; p <= 2; p++)
                             {
+                                var glyphiconIcon = p == 1 ? "home" : "road";
                                 <div class="col-md-12 ">
                                     @{
                                         var thisCarDeliveries = bookingsForPartOfTheDay.Where(hd => hd.Car.Order == p).ToList();
@@ -98,6 +99,7 @@
                                                 {
                                                     <span class="glyphicon glyphicon-wrench returnIcon"></span>
                                                 }
+                                                <span class="glyphicon glyphicon-@glyphiconIcon deliveryTypeIcon"></span>
 
                                             </a>
                                         }
@@ -123,7 +125,6 @@
                                             else
                                             {
                                                 var delivery = p == 1 ? Delivery.Home : Delivery.SideWalk;
-                                                var glyphiconIcon = p == 1 ? "home" : "road";
                                                 if (dayOfWeek == DayOfWeek.Wednesday)
                                                 {
                                                     <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>

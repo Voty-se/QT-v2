@@ -2,7 +2,7 @@
 -- --------------------------------------------------
 -- Entity Designer DDL Script for SQL Server 2005, 2008, 2012 and Azure
 -- --------------------------------------------------
--- Date Created: 01/23/2018 21:54:34
+-- Date Created: 01/28/2018 16:25:11
 -- Generated from EDMX file: C:\Users\Ben\Documents\Voty AB\Projects\AB\Customers Apps\QT v2\QT\QTransportModel.edmx
 -- --------------------------------------------------
 
@@ -26,6 +26,9 @@ GO
 IF OBJECT_ID(N'[dbo].[FK_BokingUser1]', 'F') IS NOT NULL
     ALTER TABLE [dbo].[BokingSet] DROP CONSTRAINT [FK_BokingUser1];
 GO
+IF OBJECT_ID(N'[dbo].[FK_BokingProduct]', 'F') IS NOT NULL
+    ALTER TABLE [dbo].[ProductSet] DROP CONSTRAINT [FK_BokingProduct];
+GO
 
 -- --------------------------------------------------
 -- Dropping existing tables
@@ -42,6 +45,9 @@ IF OBJECT_ID(N'[dbo].[CustomerSet]', 'U') IS NOT NULL
 GO
 IF OBJECT_ID(N'[dbo].[BokingSet]', 'U') IS NOT NULL
     DROP TABLE [dbo].[BokingSet];
+GO
+IF OBJECT_ID(N'[dbo].[ProductSet]', 'U') IS NOT NULL
+    DROP TABLE [dbo].[ProductSet];
 GO
 
 -- --------------------------------------------------

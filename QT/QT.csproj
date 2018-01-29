@@ -329,6 +329,7 @@
     <Content Include="Views\Bokings\EditReturn.cshtml" />
     <Content Include="Views\Bokings\CreateMonting.cshtml" />
     <Content Include="Views\Bokings\ProductList.cshtml" />
+    <Content Include="Views\Bokings\EditMonting.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

@@ -96,28 +96,38 @@
             }
             @time
         </dd>
+        @if (Model.Type != BookingTypes.Monting.ToString())
+        {
+            <dt>
+                @Html.DisplayName("Antal extral varor")
+            </dt>
+            <dd>
+                @(Model.NbrItems > 0 ? Model.NbrItems.ToString() : "-")
+            </dd>
 
-        <dt>
-            @Html.DisplayName("Antal extral varor")
-        </dt>
-        <dd>
-            @(Model.NbrItems > 0 ? Model.NbrItems.ToString() : "-")
-        </dd>
+            <dt>
+                @Html.DisplayName("Bortforsling")
+            </dt>
+            <dd>
+                @(Model.Pickup ? "Ja" : "Nej")
+            </dd>
 
-        <dt>
-            @Html.DisplayName("Bortforsling")
-        </dt>
-        <dd>
-            @(Model.Pickup ? "Ja" : "Nej")
-        </dd>
-
-        <dt>
-            @Html.DisplayName("Antal extra varor bortfarsling")
-        </dt>
-        <dd>
-            @(Model.NbrItemsPickup > 0 ? Model.NbrItemsPickup.ToString() : "-")
-        </dd>
-
+            <dt>
+                @Html.DisplayName("Antal extra varor bortfarsling")
+            </dt>
+            <dd>
+                @(Model.NbrItemsPickup > 0 ? Model.NbrItemsPickup.ToString() : "-")
+            </dd>
+        }
+        else
+        {
+            <dt>
+                @Html.DisplayName("Antal varor")
+            </dt>
+            <dd>
+                @(Model.Product.Count)
+            </dd>
+        }
         <dt>
             @Html.DisplayName("Bokat av")
         </dt>
