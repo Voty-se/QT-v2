@@ -205,7 +205,7 @@ namespace QT.Models
     {
         public Zone Zone1 = new Zone { Name = "Zon1", PriceCustomer = 349, PickupCustomer = 150, PriceXLutx = 160, PickupXLutz = 160};
         public Zone Zone2 = new Zone { Name = "Zon2", PriceCustomer = 599, PickupCustomer = 300, PriceXLutx = 342, PickupXLutz = 342};
-        public Zone Zone3 = new Zone { Name = "Zon3", PriceCustomer = 14, PickupCustomer = 300, PriceXLutx = 8, PickupXLutz = 8};
+        public Zone Zone3 = new Zone { Name = "Zon3", PriceCustomer = 14, PickupCustomer = 300, PriceXLutx = 8, PickupXLutz = 10};
         //public Zone Danmark = new Zone { Name = "Danmark", PriceCustomer = 2999, PickupCustomer = 2999, PriceXLutx = 2999, PickupXLutz = 2999};
         public Zone Danmark = new Zone { Name = "Danmark", PriceCustomer = 2999, PickupCustomer = 300, PriceXLutx = 2999, PickupXLutz = 300 };
         public decimal ExtraItem = 100;
@@ -215,7 +215,7 @@ namespace QT.Models
     {
         public Zone Zone1 = new Zone { Name = "Zon1", PriceCustomer = 699, PickupCustomer = 350, PriceXLutx = 360, PickupXLutz = 360};
         public Zone Zone2 = new Zone { Name = "Zon2", PriceCustomer = 999, PickupCustomer = 500, PriceXLutx = 592, PickupXLutz = 592};
-        public Zone Zone3 = new Zone { Name = "Zon3", PriceCustomer = 14, PickupCustomer = 500, PriceXLutx = 8, PickupXLutz = 8};
+        public Zone Zone3 = new Zone { Name = "Zon3", PriceCustomer = 14, PickupCustomer = 500, PriceXLutx = 8, PickupXLutz = 10};
         //public Zone Danmark = new Zone { Name = "Danmark", PriceCustomer = 3499, PickupCustomer = 3499, PriceXLutx = 3499, PickupXLutz = 3499 };
         public Zone Danmark = new Zone { Name = "Danmark", PriceCustomer = 3499, PickupCustomer = 350, PriceXLutx = 3499, PickupXLutz = 350 };
         public decimal Zone3BasePriceCustomer = 500;

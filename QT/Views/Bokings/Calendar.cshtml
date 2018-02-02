@@ -127,10 +127,11 @@
                                                 var delivery = p == 1 ? Delivery.Home : Delivery.SideWalk;
                                                 if (dayOfWeek == DayOfWeek.Wednesday)
                                                 {
-                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
+                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span>
+                                                        <span class="newBookingIcon glyphicon glyphicon-wrench"></span></a>
 
                                                 }
-                                                else if (isLogistic)
+                                                if (isLogistic)
                                                 {
                                                     <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})"><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
                                                 }

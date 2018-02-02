@@ -104,8 +104,8 @@ function SetDeliveryType() {
 
 function getPrice() {
 
-    if ($('#Type').val() === "Monting")
-        return;
+    //if ($('#Type').val() === "Monting")
+        //return;
 
     var dt = $('#fromCreateOrder').serialize();
 
@@ -196,7 +196,8 @@ function addProduct() {
         data: { productId: id },
         success: function (result) {
             $('#productsListContainer').html(result);
-            getPriceMonting();
+            getPrice();
+            //getPriceMonting();
         },
         error: function (xhr) {
             //alert(xhr.responseText);  
@@ -211,7 +212,8 @@ function removeProduct(id) {
         data: { productId: id },
         success: function (result) {
             $('#productsListContainer').html(result);
-            getPriceMonting();
+            getPrice();
+            //getPriceMonting();
         },
         error: function (xhr) {
             //alert(xhr.responseText);  

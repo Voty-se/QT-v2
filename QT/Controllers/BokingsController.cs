@@ -478,7 +478,10 @@ namespace QT.Controllers
                             Quantity = p.Time.ToString()
                         }).ToList();
 
-                    boking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+                    var nbrItems = boking.NbrItems > 0 ? boking.NbrItems - 1 : 0;
+
+                    //boking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+                    boking.DeliveryCost = GetPrices(boking.Zone, boking.WayOfDelivery, boking.Distance, boking.Pickup, false, nbrItems, boking.NbrItemsPickup, boking.BookingDay.DayOfWeek).ToString();
                     boking.Status = Status.New.ToString();
 
                     if (boking.Remarks == null)
@@ -585,6 +588,13 @@ namespace QT.Controllers
             if (pickup)
                 value += Zones.PriceForPicups(wayOfDelivey, zone, distance, nbrExtraItemsPickup, xlutzPays);
 
+            try
+            {
+                var productList = (List<StandarProduct>) Session["products"];
+                value += GetPriceFrMonting(productList);
+            }
+            catch (Exception) { }
+
             return value;
         }
 
@@ -596,9 +606,7 @@ namespace QT.Controllers
         [HttpPost]
         public string GetPriceZone(Boking booking, bool Leverera = true)
         {
-            if (booking.Type == BookingTypes.Monting.ToString())
-                return "";
-
+            
             var user = AdminAuthenticationHelper.Current.GetAdminUserData().Role;
             if (user == Role.LogisticAdministrator.ToString())
                 return GetPriceZoneReturn(booking, Leverera);
@@ -606,12 +614,25 @@ namespace QT.Controllers
             var priceDetails = new StringBuilder();
             try
             {
+                var nbrItems = booking.NbrItems 
+                    - (booking.Type == BookingTypes.Monting.ToString() 
+                    && booking.NbrItems > 0 ? 1 : 0);
+                
                 var price = Zones.PriceForDelivery(booking.WayOfDelivery, booking.Zone, booking.Distance,
-                    booking.NbrItems, booking.PayBySupplier, booking.BookingDay.DayOfWeek);
+                    nbrItems, booking.PayBySupplier, booking.BookingDay.DayOfWeek);
+
+                if (booking.Type == BookingTypes.Monting.ToString() && booking.NbrItems == 0)
+                    price = 0;
                 
                 priceDetails.AppendLine("Pris för leverans:          " + price);
                 //priceDetails.AppendLine("");
-
+                if (booking.Type == BookingTypes.Monting.ToString())
+                {
+                    var productList = (List<StandarProduct>)Session["products"];
+                    var priceMonting = GetPriceFrMonting(productList);
+                    price += priceMonting;
+                    priceDetails.AppendLine("Pris för montering:          " + priceMonting);
+                }
                 decimal pickup = 0;
                 if (booking.Pickup)
                     priceDetails.AppendLine("Pris för bortforsling:     " + (pickup = Zones.PriceForPicups(booking.WayOfDelivery, booking.Zone, booking.Distance,booking.NbrItemsPickup, false)));

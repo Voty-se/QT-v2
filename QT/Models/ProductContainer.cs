@@ -9,7 +9,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 1,
-                Name = "Kontinentalsäg",
+                Name = "Kontinentalsäng",
                 Text = "",
                 Price = 500,
                 Time = 30
@@ -67,8 +67,8 @@ namespace QT.Models
                 Id = 8,
                 Name = "Vitrinskåp",
                 Text = "",
-                Price = 600,
-                Time = 90
+                Price = 1299,
+                Time = 120
             },
             new StandarProduct
             {
@@ -107,8 +107,8 @@ namespace QT.Models
                 Id = 13,
                 Name = "Hyllkombination",
                 Text = "",
-                Price = 1500,
-                Time = 120
+                Price = 1999,
+                Time = 150
             },
             new StandarProduct
             {
@@ -160,11 +160,19 @@ namespace QT.Models
             },
             new StandarProduct
             {
-                Id = 1,
+                Id = 20,
                 Name = "Hallkombination",
                 Text = "(1-4 delar)",
-                Price = 700,
+                Price = 1299,
                 Time = 120
+            },
+            new StandarProduct
+            {
+                Id = 21,
+                Name = "Skjutdörrsgarderob",
+                Text = "3tim",
+                Price = 2499,
+                Time = 180
             }
         };
     }
