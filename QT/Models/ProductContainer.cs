@@ -17,7 +17,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 2,
-                Name = "Ramsäng u. Förvaring",
+                Name = "Ramsäng utan förvaring",
                 Text = "",
                 Price = 500,
                 Time = 30
@@ -25,7 +25,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 3,
-                Name = "Ramsäng m. Förvaring",
+                Name = "Ramsäng med förvaring",
                 Text = "",
                 Price = 750,
                 Time = 60
@@ -34,8 +34,16 @@ namespace QT.Models
             {
                 Id = 4,
                 Name = "Garderob",
-                Text = "",
-                Price = 1500,
+                Text = "Till 150cm <",
+                Price = 2000,
+                Time = 120
+            },
+            new StandarProduct
+            {
+                Id = 22,
+                Name = "Garderob",
+                Text = "Från 150cm >",
+                Price = 3000,
                 Time = 120
             },
             new StandarProduct
@@ -67,7 +75,7 @@ namespace QT.Models
                 Id = 8,
                 Name = "Vitrinskåp",
                 Text = "",
-                Price = 1299,
+                Price = 1000,
                 Time = 120
             },
             new StandarProduct
@@ -121,7 +129,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 15,
-                Name = "Fåtöljer",
+                Name = "Fåtölj",
                 Text = "",
                 Price = 400,
                 Time = 30
@@ -163,7 +171,15 @@ namespace QT.Models
                 Id = 20,
                 Name = "Hallkombination",
                 Text = "(1-4 delar)",
-                Price = 1299,
+                Price = 1300,
+                Time = 120
+            },
+            new StandarProduct
+            {
+                Id = 23,
+                Name = "Hallkombination",
+                Text = "",
+                Price = 2500,
                 Time = 120
             },
             new StandarProduct
@@ -173,6 +189,22 @@ namespace QT.Models
                 Text = "3tim",
                 Price = 2499,
                 Time = 180
+            },
+            new StandarProduct
+            {
+                Id = 21,
+                Name = "Våningsäng",
+                Text = "",
+                Price = 1500,
+                Time = 60
+            },
+            new StandarProduct
+            {
+                Id = 21,
+                Name = "Spjällsäng",
+                Text = "",
+                Price = 500,
+                Time = 30
             }
         };
     }

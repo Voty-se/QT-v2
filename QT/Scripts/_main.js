@@ -36,6 +36,12 @@ $(document).ready(function () {
         $('#NbrItemsPickupLable').toggle();
     });
 
+    $('#Canceled').change(function () {
+        $('#NbrItemsLable').toggle();
+        $('#NbrItems').toggle();
+        $('#showInfo').toggle();
+    });
+
     $('#Leverera').change(function () {
         $('#NbrItems').toggle();
         $('#NbrItemsLable').toggle();

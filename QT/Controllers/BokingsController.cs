@@ -478,10 +478,10 @@ namespace QT.Controllers
                             Quantity = p.Time.ToString()
                         }).ToList();
 
-                    var nbrItems = boking.NbrItems > 0 ? boking.NbrItems - 1 : 0;
+                    //var nbrItems = boking.NbrItems > 0 ? boking.NbrItems - 1 : 0;
 
                     //boking.DeliveryCost = GetPriceFrMonting(productList).ToString();
-                    boking.DeliveryCost = GetPrices(boking.Zone, boking.WayOfDelivery, boking.Distance, boking.Pickup, false, nbrItems, boking.NbrItemsPickup, boking.BookingDay.DayOfWeek).ToString();
+                    boking.DeliveryCost = GetPrices(boking.Zone, boking.WayOfDelivery, boking.Distance, boking.Pickup, false, boking.NbrItems, boking.NbrItemsPickup, boking.BookingDay.DayOfWeek, boking.Canceled).ToString();//use unused cancel property as delivery. 
                     boking.Status = Status.New.ToString();
 
                     if (boking.Remarks == null)
@@ -614,14 +614,14 @@ namespace QT.Controllers
             var priceDetails = new StringBuilder();
             try
             {
-                var nbrItems = booking.NbrItems 
-                    - (booking.Type == BookingTypes.Monting.ToString() 
-                    && booking.NbrItems > 0 ? 1 : 0);
+                //var nbrItems = booking.NbrItems 
+                //    - (booking.Type == BookingTypes.Monting.ToString() 
+                //    && booking.NbrItems > 0 ? 1 : 0);
                 
                 var price = Zones.PriceForDelivery(booking.WayOfDelivery, booking.Zone, booking.Distance,
-                    nbrItems, booking.PayBySupplier, booking.BookingDay.DayOfWeek);
+                    booking.NbrItems, booking.PayBySupplier, booking.BookingDay.DayOfWeek);
 
-                if (booking.Type == BookingTypes.Monting.ToString() && booking.NbrItems == 0)
+                if (booking.Type == BookingTypes.Monting.ToString() && !booking.Canceled)//use unused cancel property as delivery. 
                     price = 0;
                 
                 priceDetails.AppendLine("Pris för leverans:          " + price);
@@ -633,6 +633,7 @@ namespace QT.Controllers
                     price += priceMonting;
                     priceDetails.AppendLine("Pris för montering:          " + priceMonting);
                 }
+               
                 decimal pickup = 0;
                 if (booking.Pickup)
                     priceDetails.AppendLine("Pris för bortforsling:     " + (pickup = Zones.PriceForPicups(booking.WayOfDelivery, booking.Zone, booking.Distance,booking.NbrItemsPickup, false)));

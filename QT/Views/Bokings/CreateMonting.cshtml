@@ -28,7 +28,7 @@
 
     var paymentList = Zones.ZoneList(false, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek);
     paymentList.RemoveAt(2);
-    var productList = new List<SelectListItem>(ProductContainer.Products.Select(p => new SelectListItem { Text = p.Name + " - " + p.Text, Value = p.Id.ToString()}));
+    var productList = new List<SelectListItem>(ProductContainer.Products.OrderBy(pr => pr.Name).Select(p => new SelectListItem { Text = p.Name + "  " + p.Text, Value = p.Id.ToString()}));
 
 }
  
@@ -170,15 +170,21 @@
             </div>
         </div>
 
+        <div class="form-group">
+            @Html.LabelFor(model => model.Canceled, "Med leverans", new { @class = "control-label col-md-2" })
+            <div class="col-md-1">
+                @Html.CheckBoxFor(model => model.Canceled, new { htmlAttributes = new { @class = "form-control" } })
+            </div>
+        </div>
         @if (userRole == Role.Administrator.ToString() || userRole == Role.xlutz.ToString())
         {
             <div class="form-group">
-                @Html.LabelFor(model => model.NbrItems, "Produktgrupp att leverera", new {@id = "NbrItemsLable", @class = "control-label col-md-3"})
+                @Html.LabelFor(model => model.NbrItems, "Produktgrupp att leverera", new {@id = "NbrItemsLable", @class = "control-label col-md-3", @style = "display:none;" })
                 <div class="col-md-2">
-                    @Html.DropDownListFor(model => model.NbrItems, nbrsList, new {@class = "form-control"})
+                    @Html.DropDownListFor(model => model.NbrItems, nbrsList, new {@class = "form-control", @style = "display:none;" })
                     @Html.ValidationMessageFor(model => model.NbrItems, "", new {@class = "text-danger"})
                 </div>
-                <span id="showInfo" class="glyphicon glyphicon-question-sign" title="Extra produktgrupp att leverera"></span>
+                <span id="showInfo" class="glyphicon glyphicon-question-sign" title="Extra produktgrupp att leverera" style = "display:none;"></span>
                 @*<div class="alert alert-info">
                 <strong>Info!</strong> Indicates a neutral informative change or action.
             </div>*@

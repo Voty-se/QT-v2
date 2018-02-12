@@ -266,6 +266,7 @@
     <Content Include="Content\Statics\LEVERANSVILLKOR Qtransport.pdf" />
     <Content Include="Content\Statics\LEVERANSVILLKOR REKLA Qtransport.pdf" />
     <Content Include="Content\Statics\QTransport sms.pdf" />
+    <Content Include="Content\Statics\LEVERANSVILLKOR Qtransport 2.pdf" />
     <None Include="Properties\PublishProfiles\qtmalmo - FTP.pubxml" />
     <None Include="Properties\PublishProfiles\qtmalmo - Web Deploy.pubxml" />
     <None Include="Properties\PublishProfiles\qtmalmo.pubxml" />
