@@ -560,7 +560,9 @@ namespace QT.Controllers
                             "040-6555 000";
 
             var pdf = boking.Type == BookingTypes.Return.ToString()
-                ? "LEVERANSVILLKOR REKLA Qtransport"
+                ? "LEVERANSVILLKOR REKLA Qtransport" 
+                : boking.Type == BookingTypes.Monting.ToString() 
+                ? "LEVERANSVILLKOR Qtransport 2"
                 : "LEVERANSVILLKOR Qtransport";
             var status = Helpers.MailHandler.SendEmail(message, boking.Customer.Email, "Orderbekräftelse från XXXLutz", true, pdf);
             return status;
@@ -856,9 +858,10 @@ namespace QT.Controllers
                     booking.WayOfDelivery = boking.WayOfDelivery;
                     booking.Zone = boking.Zone;
                     booking.Type = boking.Type;
+                    booking.Canceled = boking.Canceled;
 
                     var productList = (List<StandarProduct>)Session["products"];
-                    booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+                    //booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
 
                     if (productList != null && productList.Any())
                         booking.Product = productList.Select(p => new Product
@@ -869,7 +872,8 @@ namespace QT.Controllers
                             Quantity = p.Time.ToString()
                         }).ToList();
 
-                    booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+                    //booking.DeliveryCost = GetPriceFrMonting(productList).ToString();
+                    booking.DeliveryCost = GetPrices(boking.Zone, boking.WayOfDelivery, boking.Distance, boking.Pickup, false, boking.NbrItems, boking.NbrItemsPickup, boking.BookingDay.DayOfWeek, boking.Canceled).ToString();//use unused cancel property as delivery. 
 
                     db.BokingSet.AddOrUpdate(booking);
                     try
