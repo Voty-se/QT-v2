@@ -185,14 +185,6 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 21,
-                Name = "Skjutdörrsgarderob",
-                Text = "3tim",
-                Price = 2499,
-                Time = 180
-            },
-            new StandarProduct
-            {
-                Id = 21,
                 Name = "Våningsäng",
                 Text = "",
                 Price = 1500,
@@ -200,7 +192,7 @@ namespace QT.Models
             },
             new StandarProduct
             {
-                Id = 21,
+                Id = 24,
                 Name = "Spjällsäng",
                 Text = "",
                 Price = 500,

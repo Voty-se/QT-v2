@@ -547,9 +547,10 @@ namespace QT.Controllers
                           $"Adress: {boking.Customer.Address1}\n\n\n";
 
             if (boking.Type != BookingTypes.Return.ToString())
-                message += boking.Type == BookingTypes.Monting.ToString()
-                    ? $"{GetPriceMonting()}\n\ns"
-                    : $"{GetPriceZone(boking, Leverera)}\n\n";
+                message += $"{GetPriceZone(boking, Leverera)}\n\n";
+
+            if (boking.Type == BookingTypes.Monting.ToString())
+                message += $"{GetPriceMonting()}\n\n";
 
             message += $"Mvh Q Transport";
 

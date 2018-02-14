@@ -27,7 +27,7 @@ namespace QT.Models
                     }
                 };
 
-                if (day >= DayOfWeek.Monday || day <= DayOfWeek.Friday)
+                if ( DayOfWeek.Monday <= day || day <= DayOfWeek.Friday)
                     list.Add(new SelectListItem
                     {
                         Text =
@@ -37,7 +37,7 @@ namespace QT.Models
                     });
 
 
-                if (day == DayOfWeek.Tuesday || day == DayOfWeek.Thursday)
+                if (DayOfWeek.Tuesday >= day || day <= DayOfWeek.Thursday)
                     list.Add(new SelectListItem
                     {
                         Text = Home.Zone3.Name + $" (" + (retur ? Home.Zone3.PriceXLutx : Home.Zone3.PriceCustomer) + " kr /km)",

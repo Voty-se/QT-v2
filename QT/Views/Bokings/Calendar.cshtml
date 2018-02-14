@@ -61,9 +61,14 @@
                 //var booked = Model.Bokings.Any(b => b.BookingDay == time);
 
                 <div class="col-md-1 calendar-row-head"><strong>@LanguageDictionary.Translate[time.DayOfWeek.ToString()]</strong><br /><small>@time.ToShortDateString()</small>
+                    
                 @if (time.DayOfWeek == DayOfWeek.Saturday)
                 {
                     <br /><small style="color: red;">(10.00 - 15.00)</small>
+                }
+                @if (time.DayOfWeek == DayOfWeek.Wednesday)
+                {
+                    <span class="glyphicon glyphicon-wrench"></span>
                 }
                 </div>
                 <div class="col-md-11 calendar-row-wraper">
@@ -92,8 +97,8 @@
 
                                             <a class="partbooked @colorClass" href="@Url.Action("Details", new { booking.Id })">@Html.Raw(booking.OrderNbr )
                                                 @if (booking.Type == BookingTypes.Return.ToString())
-                                                 {
-                                                     <span class="glyphicon glyphicon-refresh returnIcon" ></span>
+                                                {
+                                                    <span class="glyphicon glyphicon-refresh returnIcon" ></span>
                                                 }
                                                 @if (booking.Type == BookingTypes.Monting.ToString())
                                                 {
@@ -103,7 +108,8 @@
 
                                             </a>
                                         }
-                                        if (thisCarDeliveries.Count() < 5)
+                                        var maxBookings = time.DayOfWeek == DayOfWeek.Wednesday ? 1 : 5;
+                                        if (thisCarDeliveries.Count() < maxBookings)
                                         {
                                             var dayOfWeek = time.DayOfWeek;
                                             var latestTimeToBook = DateTime.Today;//.AddHours(15);
@@ -131,7 +137,7 @@
                                                         <span class="newBookingIcon glyphicon glyphicon-wrench"></span></a>
 
                                                 }
-                                                if (isLogistic)
+                                                else if (isLogistic)
                                                 {
                                                     <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})"><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
                                                 }
@@ -144,6 +150,10 @@
                                         <div class="clearfix"></div>
                                     }
                                 </div>
+                                if (time.DayOfWeek == DayOfWeek.Wednesday)
+                                {
+                                    break;
+                                }
                             }
                         </div>
                      }
