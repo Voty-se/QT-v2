@@ -163,7 +163,13 @@
                 @Html.DropDownListFor(model => model.NbrItems, nbrsList, new { @class = "form-control" })
                 @Html.ValidationMessageFor(model => model.NbrItems, "", new { @class = "text-danger" })
             </div>
-            <span id="showInfo" class="glyphicon glyphicon-question-sign" title="Extra produktgrupp att leverera"></span>
+            <span id="showInfo" class="glyphicon glyphicon-question-sign" title="Undantag där man väljer en produkt att leverera är:
+  Stolar + bord (Max 6 stolar)
+  Soffa 3+2+1 av samma modell
+  Sängram+ribbotten+madrass
+
+(Detta för att kund ej skall betala 100kr extra/vara)">
+            </span>
             @*<div class="alert alert-info">
                 <strong>Info!</strong> Indicates a neutral informative change or action.
             </div>*@

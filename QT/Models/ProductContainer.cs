@@ -169,7 +169,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 20,
-                Name = "Hallkombination",
+                Name = "Hallmöbler",
                 Text = "(1-4 delar)",
                 Price = 1300,
                 Time = 120
@@ -177,7 +177,7 @@ namespace QT.Models
             new StandarProduct
             {
                 Id = 23,
-                Name = "Hallkombination",
+                Name = "Hallmöbler",
                 Text = "",
                 Price = 2500,
                 Time = 120

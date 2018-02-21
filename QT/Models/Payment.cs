@@ -10,7 +10,7 @@ namespace QT.Models
         public static Home Home = new Home();
         public static SideWalk SideWalk = new SideWalk();
 
-        public static List<SelectListItem> ZoneList(bool retur, bool home, DayOfWeek day)
+        public static List<SelectListItem> ZoneList(bool retur, bool home, DayOfWeek day, bool showPrice = true)
         {
             List<SelectListItem> list;
             if (home)
@@ -20,8 +20,7 @@ namespace QT.Models
                     new SelectListItem
                     {
                         Text =
-                            Home.Zone1.Name + $" (" + (retur ? Home.Zone1.PriceXLutx : Home.Zone1.PriceCustomer) +
-                            " kr)",
+                            Home.Zone1.Name + (showPrice ? $" (" + (retur ? Home.Zone1.PriceXLutx : Home.Zone1.PriceCustomer) +" kr)" : ""),
                         Value = Home.Zone1.Name,
                         Selected = true
                     }
@@ -31,8 +30,7 @@ namespace QT.Models
                     list.Add(new SelectListItem
                     {
                         Text =
-                            Home.Zone2.Name + $" (" + (retur ? Home.Zone2.PriceXLutx : Home.Zone2.PriceCustomer) +
-                            " kr)",
+                            Home.Zone2.Name + (showPrice ? $" (" + (retur ? Home.Zone2.PriceXLutx : Home.Zone2.PriceCustomer) +" kr)" : ""),
                         Value = Home.Zone2.Name
                     });
 
@@ -40,15 +38,13 @@ namespace QT.Models
                 if (DayOfWeek.Tuesday >= day || day <= DayOfWeek.Thursday)
                     list.Add(new SelectListItem
                     {
-                        Text = Home.Zone3.Name + $" (" + (retur ? Home.Zone3.PriceXLutx : Home.Zone3.PriceCustomer) + " kr /km)",
+                        Text = Home.Zone3.Name + (showPrice ? $" (" + (retur ? Home.Zone3.PriceXLutx : Home.Zone3.PriceCustomer) + " kr /km)" : ""),
                         Value = Home.Zone3.Name
                     });
 
                 list.Add(new SelectListItem
                 {
-                    Text =
-                            Home.Danmark.Name + $" (" + (retur ? Home.Danmark.PriceXLutx : Home.Danmark.PriceCustomer) +
-                            " kr)",
+                    Text = Home.Danmark.Name + (showPrice ? $" (" + (retur ? Home.Danmark.PriceXLutx : Home.Danmark.PriceCustomer) +" kr)" : ""),
                     Value = Home.Danmark.Name
                 });
 
@@ -60,8 +56,7 @@ namespace QT.Models
                 new SelectListItem()
                 {
                     Text =
-                        SideWalk.Zone1.Name + $" (" + (retur ? SideWalk.Zone1.PriceXLutx : SideWalk.Zone1.PriceCustomer) +
-                        " kr)",
+                        SideWalk.Zone1.Name + (showPrice ? $" (" + (retur ? SideWalk.Zone1.PriceXLutx : SideWalk.Zone1.PriceCustomer) +" kr)" : ""),
                     Value = SideWalk.Zone1.Name,
                     Selected = true
                 }
@@ -71,8 +66,7 @@ namespace QT.Models
                 list.Add(new SelectListItem
                 {
                     Text =
-                            SideWalk.Zone2.Name + $" (" +
-                            (retur ? SideWalk.Zone2.PriceXLutx : SideWalk.Zone2.PriceCustomer) + " kr)",
+                            SideWalk.Zone2.Name + (showPrice ? $" (" +(retur ? SideWalk.Zone2.PriceXLutx : SideWalk.Zone2.PriceCustomer) +" kr)" : ""),
                     Value = SideWalk.Zone2.Name
                 }
                 );
@@ -80,15 +74,14 @@ namespace QT.Models
             if (day == DayOfWeek.Tuesday || day == DayOfWeek.Thursday)
                 list.Add(new SelectListItem
                 {
-                    Text = SideWalk.Zone3.Name + $" (" + (retur ? SideWalk.Zone3.PriceXLutx : SideWalk.Zone3.PriceCustomer) + " kr /km)",
+                    Text = SideWalk.Zone3.Name + (showPrice ? $" (" + (retur ? SideWalk.Zone3.PriceXLutx : SideWalk.Zone3.PriceCustomer) + " kr /km)" : ""),
                     Value = SideWalk.Zone3.Name
                 });
 
             list.Add(new SelectListItem
                 {
                     Text =
-                        SideWalk.Danmark.Name + $" (" +
-                        (retur ? SideWalk.Danmark.PriceXLutx : SideWalk.Danmark.PriceCustomer) + " kr)",
+                        SideWalk.Danmark.Name + (showPrice ? $" (" +(retur ? SideWalk.Danmark.PriceXLutx : SideWalk.Danmark.PriceCustomer) +" kr)" : ""),
                     Value = SideWalk.Danmark.Name
                 }
             );
