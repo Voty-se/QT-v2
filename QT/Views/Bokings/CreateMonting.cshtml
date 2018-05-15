@@ -182,7 +182,7 @@
             @*@if (userRole == Role.Administrator.ToString() || userRole == Role.xlutz.ToString())
                 {*@
             <div class="form-group">
-                @Html.LabelFor(model => model.NbrItems, "Antal produkter att leverera", new { @id = "NbrItemsLable", @class = "control-label col-md-3", @style = "display:none;" })
+                @Html.LabelFor(model => model.NbrItems, "Extra antal produkter att leverera", new { @id = "NbrItemsLable", @class = "control-label col-md-3", @style = "display:none;" })
                 <div class="col-md-2">
                     @Html.DropDownListFor(model => model.NbrItems, nbrsList, new { @class = "form-control", @style = "display:none;" })
                     @Html.ValidationMessageFor(model => model.NbrItems, "", new { @class = "text-danger" })

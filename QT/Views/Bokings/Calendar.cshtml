@@ -116,7 +116,7 @@
                                             var timeNow = (DateTime.UtcNow - DateTime.Today ).TotalHours;
 
                                             var disable = (time <= latestTimeToBook);
-                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 14);
+                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 15);
                                             disable = disable || (dayOfWeek == DayOfWeek.Saturday && j != 1);
                                             disable = disable || (dayOfWeek == DayOfWeek.Saturday && p == 2);
                                             disable = disable || (dayOfWeek == DayOfWeek.Sunday);
