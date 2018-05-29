@@ -8,10 +8,10 @@ namespace QT.Helpers
     {
         public object BindModel(ControllerContext controllerContext, ModelBindingContext bindingContext)
         {
-            ValueProviderResult valueResult = bindingContext.ValueProvider
+            var valueResult = bindingContext.ValueProvider
                 .GetValue(bindingContext.ModelName);
 
-            ModelState modelState = new ModelState { Value = valueResult };
+            var modelState = new ModelState { Value = valueResult };
 
             object actualValue = null;
 

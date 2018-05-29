@@ -116,7 +116,7 @@
                                             var timeNow = (DateTime.UtcNow - DateTime.Today ).TotalHours;
 
                                             var disable = (time <= latestTimeToBook);
-                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 15);
+                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 13);
                                             disable = disable || (dayOfWeek == DayOfWeek.Saturday && j != 1);
                                             disable = disable || (dayOfWeek == DayOfWeek.Saturday && p == 2);
                                             disable = disable || (dayOfWeek == DayOfWeek.Sunday);
@@ -131,19 +131,27 @@
                                             else
                                             {
                                                 var delivery = p == 1 ? Delivery.Home : Delivery.SideWalk;
-                                                if (dayOfWeek == DayOfWeek.Wednesday)
+                                                if (dayOfWeek != DayOfWeek.Wednesday)
                                                 {
-                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span>
-                                                        <span class="newBookingIcon glyphicon glyphicon-wrench"></span></a>
-
+                                                    if (isLogistic)
+                                                    {
+                                                        <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})">
+                                                            <span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span>
+                                                        </a>
+                                                    }
+                                                    else
+                                                    {
+                                                        <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("Create", new {time, part = j, delivery})">
+                                                            <span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span>
+                                                        </a>
+                                                    }
                                                 }
-                                                else if (isLogistic)
+                                                else if (j != 1)
                                                 {
-                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})"><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
-                                                }
-                                                else
-                                                {
-                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("Create", new {time, part = j, delivery})"><span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span></a>
+                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})">
+                                                        <span class="newBookingIconPlus glyphicon glyphicon-plus"></span>
+                                                        <span class="newBookingIcon glyphicon glyphicon-wrench"></span>
+                                                    </a>
                                                 }
                                             }
                                         }

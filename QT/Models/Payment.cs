@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Web.Mvc;
-using Antlr.Runtime.Misc;
+using PublicHoliday;
 
 namespace QT.Models
 {
@@ -10,8 +10,9 @@ namespace QT.Models
         public static Home Home = new Home();
         public static SideWalk SideWalk = new SideWalk();
 
-        public static List<SelectListItem> ZoneList(bool retur, bool home, DayOfWeek day, bool showPrice = true)
+        public static List<SelectListItem> ZoneList(bool retur, bool home, DayOfWeek day, DateTime date, bool showPrice = true)
         {
+            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date) ? "Röddag extra 500kr" : "";
             List<SelectListItem> list;
             if (home)
             {
@@ -20,7 +21,7 @@ namespace QT.Models
                     new SelectListItem
                     {
                         Text =
-                            Home.Zone1.Name + (showPrice ? $" (" + (retur ? Home.Zone1.PriceXLutx : Home.Zone1.PriceCustomer) +" kr)" : ""),
+                            Home.Zone1.Name + (showPrice ? $" ({(retur ? Home.Zone1.PriceXLutx : Home.Zone1.PriceCustomer)} kr {holidayExtraPrice})" : ""),
                         Value = Home.Zone1.Name,
                         Selected = true
                     }
@@ -30,7 +31,7 @@ namespace QT.Models
                     list.Add(new SelectListItem
                     {
                         Text =
-                            Home.Zone2.Name + (showPrice ? $" (" + (retur ? Home.Zone2.PriceXLutx : Home.Zone2.PriceCustomer) +" kr)" : ""),
+                            Home.Zone2.Name + (showPrice ? $" ({(retur ? Home.Zone2.PriceXLutx : Home.Zone2.PriceCustomer)} kr {holidayExtraPrice})" : ""),
                         Value = Home.Zone2.Name
                     });
 
@@ -38,13 +39,13 @@ namespace QT.Models
                 if (DayOfWeek.Tuesday >= day || day <= DayOfWeek.Thursday)
                     list.Add(new SelectListItem
                     {
-                        Text = Home.Zone3.Name + (showPrice ? $" (" + (retur ? Home.Zone3.PriceXLutx : Home.Zone3.PriceCustomer) + " kr /km)" : ""),
+                        Text = Home.Zone3.Name + (showPrice ? $" ({(retur ? Home.Zone3.PriceXLutx : Home.Zone3.PriceCustomer) } kr /km) {holidayExtraPrice}" : ""),
                         Value = Home.Zone3.Name
                     });
 
                 list.Add(new SelectListItem
                 {
-                    Text = Home.Danmark.Name + (showPrice ? $" (" + (retur ? Home.Danmark.PriceXLutx : Home.Danmark.PriceCustomer) +" kr)" : ""),
+                    Text = Home.Danmark.Name + (showPrice ? $" ({(retur ? Home.Danmark.PriceXLutx : Home.Danmark.PriceCustomer)} kr {holidayExtraPrice})" : ""),
                     Value = Home.Danmark.Name
                 });
 
@@ -56,7 +57,7 @@ namespace QT.Models
                 new SelectListItem()
                 {
                     Text =
-                        SideWalk.Zone1.Name + (showPrice ? $" (" + (retur ? SideWalk.Zone1.PriceXLutx : SideWalk.Zone1.PriceCustomer) +" kr)" : ""),
+                        SideWalk.Zone1.Name + (showPrice ? $" ({(retur ? SideWalk.Zone1.PriceXLutx : SideWalk.Zone1.PriceCustomer)} kr {holidayExtraPrice})" : ""),
                     Value = SideWalk.Zone1.Name,
                     Selected = true
                 }
@@ -66,7 +67,7 @@ namespace QT.Models
                 list.Add(new SelectListItem
                 {
                     Text =
-                            SideWalk.Zone2.Name + (showPrice ? $" (" +(retur ? SideWalk.Zone2.PriceXLutx : SideWalk.Zone2.PriceCustomer) +" kr)" : ""),
+                            SideWalk.Zone2.Name + (showPrice ? $" ({(retur ? SideWalk.Zone2.PriceXLutx : SideWalk.Zone2.PriceCustomer)} kr  {holidayExtraPrice})" : ""),
                     Value = SideWalk.Zone2.Name
                 }
                 );
@@ -74,14 +75,14 @@ namespace QT.Models
             if (day == DayOfWeek.Tuesday || day == DayOfWeek.Thursday)
                 list.Add(new SelectListItem
                 {
-                    Text = SideWalk.Zone3.Name + (showPrice ? $" (" + (retur ? SideWalk.Zone3.PriceXLutx : SideWalk.Zone3.PriceCustomer) + " kr /km)" : ""),
+                    Text = SideWalk.Zone3.Name + (showPrice ? $" ({ (retur ? SideWalk.Zone3.PriceXLutx : SideWalk.Zone3.PriceCustomer)} kr /km {holidayExtraPrice})" : ""),
                     Value = SideWalk.Zone3.Name
                 });
 
             list.Add(new SelectListItem
                 {
                     Text =
-                        SideWalk.Danmark.Name + (showPrice ? $" (" +(retur ? SideWalk.Danmark.PriceXLutx : SideWalk.Danmark.PriceCustomer) +" kr)" : ""),
+                        SideWalk.Danmark.Name + (showPrice ? $" ({(retur ? SideWalk.Danmark.PriceXLutx : SideWalk.Danmark.PriceCustomer)} kr {holidayExtraPrice} )" : ""),
                     Value = SideWalk.Danmark.Name
                 }
             );
@@ -90,16 +91,17 @@ namespace QT.Models
         }
 
         public static decimal PriceForDelivery(string wayOfDelivery, string zone, decimal distance, int nbrExtraItems,
-            bool xlutzPays, DayOfWeek day)
+            bool xlutzPays, DayOfWeek day, DateTime date)
         {
+            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
             var total = (nbrExtraItems) * (wayOfDelivery == Delivery.Home.ToString() ? Home.ExtraItem : SideWalk.ExtraItem);
 
             if (zone == "Zon1" && wayOfDelivery == Delivery.SideWalk.ToString())
                 total = 0;
 
-            if (day == DayOfWeek.Saturday)
+            if (day == DayOfWeek.Saturday || holidayExtraPrice)
                 total += 500;
-
+            
             switch (zone)
             {
                 case "Zon1":
@@ -145,9 +147,14 @@ namespace QT.Models
             return total;
         }
 
-        public static decimal PriceForPicups(string wayOfDelivery, string zone, decimal distance, int nbrExtraItems, bool xlutzPays)
+        public static decimal PriceForPicups(string wayOfDelivery, string zone, decimal distance, int nbrExtraItems, bool xlutzPays, DateTime date)
         {
             var total = (nbrExtraItems) * (wayOfDelivery == Delivery.Home.ToString() ? Home.ExtraItem : SideWalk.ExtraItem);
+
+            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
+            if (holidayExtraPrice)
+                total += 500;
+
             switch (zone)
             {
                 case "Zon1":

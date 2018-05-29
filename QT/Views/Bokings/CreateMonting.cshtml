@@ -26,7 +26,7 @@
 
     var delivery = LanguageDictionary.Translate[Model.WayOfDelivery];
 
-    var paymentList = Zones.ZoneList(false, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek, false);
+    var paymentList = Zones.ZoneList(false, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek, Model.BookingDay, false);
     if (paymentList.Count() > 3)
     {
         paymentList.RemoveAt(3);

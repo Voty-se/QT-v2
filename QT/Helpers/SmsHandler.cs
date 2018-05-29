@@ -1,8 +1,5 @@
 ﻿using SMSApi.Api;
-using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Web;
 
 namespace QT.Helpers
 {
@@ -17,7 +14,7 @@ namespace QT.Helpers
             try
             {
                 to = "46" + to.TrimStart('0');
-                
+
                 var client = new Client("purchase@voty.se");
                 client.SetPasswordHash("07a0fbb4e40877cb77074eff3494b958");
 
@@ -49,30 +46,23 @@ namespace QT.Helpers
                         ("ID: " + status.ID + " NUmber: " + status.Number + " Points:" + status.Points + " Status:" +
                          status.Status + " IDx: " + status.IDx + ". "));
 
-                //for (int i = 0, l = 0; i < result.List.Count; i++)
-                //{
-                //    if (!result.List[i].isError())
-                //    {
-                //        var deleted =
-                //            smsApi.ActionDelete()
-                //                .Id(result.List[i].ID)
-                //                .Execute();
-                //        //System.Console.WriteLine("Deleted: " + deleted.Count);
-                //    }
-                //}
-
                 return true;
             }
             catch (ActionException e)
             {
+                resultStr = $"{e.Message}. {e.InnerException?.Message}";
             }
             catch (ClientException e)
             {
-                
+                resultStr = $"{e.Message}. {e.InnerException?.Message}";
             }
-            catch (HostException e) { }
+            catch (HostException e)
+            {
+                resultStr = $"{e.Message}. {e.InnerException?.Message}";
+            }
             catch (ProxyException e)
             {
+                resultStr = $"{e.Message}. {e.InnerException?.Message}";
             }
 
             return false;

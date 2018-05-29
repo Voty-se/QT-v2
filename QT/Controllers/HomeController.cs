@@ -30,15 +30,12 @@ namespace QT.Controllers
             return View();
         }
 
-        public void testSms()
+        public void TestSms()
         {
-            var resultStr = "Kundens telefonenummer saknas.";
-            var to = "46734195147";
+            const string to = "46734195147";
 
             try
             {
-                
-
                 var client = new Client("purchase@voty.se");
                 //client.SetUsername("purchase@voty.se");
                 client.SetPasswordHash("07a0fbb4e40877cb77074eff3494b958");
@@ -71,21 +68,22 @@ namespace QT.Controllers
                     System.Console.WriteLine("ID: " + status.ID + " NUmber: " + status.Number + " Points:" + status.Points + " Status:" + status.Status + " IDx: " + status.IDx);
                 }
 
-                for (int i = 0, l = 0; i < result.List.Count; i++)
+                foreach (var t in result.List)
                 {
-                    if (!result.List[i].isError())
-                    {
-                        var deleted =
-                            smsApi.ActionDelete()
-                                .Id(result.List[i].ID)
-                                .Execute();
-                        System.Console.WriteLine("Deleted: " + deleted.Count);
-                    }
+                    if (t.isError())
+                        continue;
+
+                    var deleted =
+                        smsApi.ActionDelete()
+                            .Id(t.ID)
+                            .Execute();
+                    System.Console.WriteLine("Deleted: " + deleted.Count);
                 }
 
             }
-            catch (SMSApi.Api.Exception e)
+            catch (Exception e)
             {
+                ViewBag.Error = $"{e.Message}. {e.InnerException?.Message}";
             }
         }
     }

@@ -29,7 +29,7 @@
 
     var delivery = LanguageDictionary.Translate[Model.WayOfDelivery];
 
-    var paymentList = Zones.ZoneList(true, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek);
+    var paymentList = Zones.ZoneList(true, Model.WayOfDelivery == Delivery.Home.ToString(), Model.BookingDay.DayOfWeek, Model.BookingDay);
 }
 
 @using (Html.BeginForm("EditReturn", "Bokings", method: FormMethod.Post, htmlAttributes: new { @class = "col-md-6", id = "fromCreateOrder" }))

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
-
-namespace QT.Models
+﻿namespace QT.Models
 {
     public enum Status
     {

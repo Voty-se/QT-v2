@@ -8,7 +8,7 @@ namespace QT.Helpers
 {
     public static class MailHandler
     {
-        public static bool SendEmail(string message, string to, string subject, bool attachement = false, string attachmentName = "LEVERANSVILLKOR Qtransport")
+        public static string SendEmail(string message, string to, string subject, bool attachement = false, string attachmentName = "LEVERANSVILLKOR Qtransport")
         {
             try
             {
@@ -20,7 +20,7 @@ namespace QT.Helpers
 
                 if (attachement)
                     mailMessage.Attachments.Add(
-                        new Attachment(HostingEnvironment.MapPath($@"~/Content/Statics/{attachmentName}.pdf"), MediaTypeNames.Application.Pdf));
+                        new Attachment(HostingEnvironment.MapPath($@"~/Content/Statics/{attachmentName}.pdf")?? "", mediaType: MediaTypeNames.Application.Pdf));
 
                 var client = new SmtpClient()
                 {
@@ -32,11 +32,11 @@ namespace QT.Helpers
 
                 client.Send(mailMessage);
 
-                return true;
+                return "";
             }
             catch (Exception e)
             {
-                return false;
+                return $"{e.Message}. {e.InnerException?.Message}";
             }
         }
     }

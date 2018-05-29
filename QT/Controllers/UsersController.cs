@@ -1,11 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Data;
 using System.Data.Entity;
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Web;
 using System.Web.Mvc;
 using QT.Authentication;
 
@@ -13,18 +10,18 @@ namespace QT.Controllers
 {
     public class UsersController : Controller
     {
-        private QTransportModelContainer db = new QTransportModelContainer();
+        private readonly QTransportModelContainer _db = new QTransportModelContainer();
 
         // GET: Users
         public ActionResult Index()
         {
-            return View(db.UserSet.ToList());
+            return View(_db.UserSet.ToList());
         }
 
         // GET: Users/Details/5
         public ActionResult Login(string username, string password)
         {
-            var list = db.UserSet.Where(u => u.Username == username && u.Password == password && u.Active);
+            var list = _db.UserSet.Where(u => u.Username == username && u.Password == password && u.Active);
             if (!list.Any())
             {
                 TempData["error"] = "Wrong username or password";
@@ -51,7 +48,7 @@ namespace QT.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.UserSet.Find(id);
+            User user = _db.UserSet.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -75,7 +72,7 @@ namespace QT.Controllers
             if (!ModelState.IsValid)
                 return View("Create");
 
-            if (db.UserSet.Any(u => u.Username == user.Username || u.Email == user.Email))
+            if (_db.UserSet.Any(u => u.Username == user.Username || u.Email == user.Email))
             {
                 ViewBag.Error = "Användarenamn eller epos redan registrerad.";
                 return View("Create");
@@ -85,12 +82,12 @@ namespace QT.Controllers
             {
                 //user.Role = user.Token == "xxxlutz@3399" ? Role.xlutz.ToString() : Role.qt.ToString();
 
-                user.Order = (short)(db.UserSet.Count(u => u.Role == user.Role) + 1);
+                user.Order = (short)(_db.UserSet.Count(u => u.Role == user.Role) + 1);
                 user.Active = true;
-                db.UserSet.Add(user);
+                _db.UserSet.Add(user);
                 try
                 {
-                    db.SaveChanges();
+                    _db.SaveChanges();
                     var userData = AdminAuthenticationHelper.GetUserData(user);
                     AdminAuthenticationHelper.Current.Login(userData);
                     return RedirectToAction("Index", "Home");
@@ -112,7 +109,7 @@ namespace QT.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.UserSet.Find(id);
+            User user = _db.UserSet.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -129,8 +126,8 @@ namespace QT.Controllers
         {
             if (ModelState.IsValid)
             {
-                db.Entry(user).State = EntityState.Modified;
-                db.SaveChanges();
+                _db.Entry(user).State = EntityState.Modified;
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             return View(user);
@@ -145,7 +142,7 @@ namespace QT.Controllers
         [HttpPost]
         public ActionResult ResetPassword(string emailOrUsername)
         {
-            var list = db.UserSet.Where(u => u.Username == emailOrUsername || u.Email == emailOrUsername);
+            var list = _db.UserSet.Where(u => u.Username == emailOrUsername || u.Email == emailOrUsername);
             if (!list.Any())
             {
                 ViewBag.Error = "Wrong username or password";
@@ -157,7 +154,7 @@ namespace QT.Controllers
 
             try
             {
-                db.SaveChanges();
+                _db.SaveChanges();
                 //{Request?.Url?.Authority}{Url.Content("~")}";
                 var link = new StringBuilder();
                 link.Append(Request.Url?.AbsoluteUri.Replace(Request.Url.AbsolutePath, ""));
@@ -183,14 +180,14 @@ namespace QT.Controllers
 
         public ActionResult ResetPasswordVerified(int id, string token)
         {
-            var user = db.UserSet.First(u => u.Id == id && u.Token == token);
+            var user = _db.UserSet.First(u => u.Id == id && u.Token == token);
             return View(user);
         }
 
         [HttpPost]
         public ActionResult ResetPasswordVerified(int id, string password, string rePassword)
         {
-            var user = db.UserSet.First(u => u.Id == id);
+            var user = _db.UserSet.First(u => u.Id == id);
             if (password.Length < 4 || password != rePassword)
             {
                 ViewBag.Error = "Lösenord är mindre än mindre än 4 tecken. Eller fälterna matchar inte. Prova igen.";
@@ -201,7 +198,7 @@ namespace QT.Controllers
             {
                 user.Password = password;
                 user.Token = "";
-                db.SaveChanges();
+                _db.SaveChanges();
                 
                 var userData = AdminAuthenticationHelper.GetUserData(user);
                 AdminAuthenticationHelper.Current.Login(userData);
@@ -212,6 +209,7 @@ namespace QT.Controllers
             catch (Exception e)
             {
                 ViewBag.Error = "Det gick inte att återställa lösenordet. Prova igen eller kontakta administratör.";
+                ViewBag.Error = $"{e.Message}. {e.InnerException?.Message}";
                 return ResetPasswordVerified(user.Id, user.Token);
             }
         }
@@ -223,7 +221,7 @@ namespace QT.Controllers
             {
                 return new HttpStatusCodeResult(HttpStatusCode.BadRequest);
             }
-            User user = db.UserSet.Find(id);
+            User user = _db.UserSet.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -238,9 +236,12 @@ namespace QT.Controllers
         {
             if (password == "xxxlutz@3399")
             {
-                User user = db.UserSet.Find(id);
-                db.UserSet.Remove(user);
-                db.SaveChanges();
+                var user = _db.UserSet.Find(id);
+                if (user == null)
+                    return View();
+
+                _db.UserSet.Remove(user);
+                _db.SaveChanges();
                 return RedirectToAction("Index");
             }
             else
@@ -254,7 +255,7 @@ namespace QT.Controllers
         {
             if (disposing)
             {
-                db.Dispose();
+                _db.Dispose();
             }
             base.Dispose(disposing);
         }
