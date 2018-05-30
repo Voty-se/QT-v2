@@ -15,7 +15,7 @@ $(document).ready(function () {
                 e.preventDefault();
                 return false;
             }
-            return false;
+            //return false;
         });
 
     //$('#showTime').on('hover',
