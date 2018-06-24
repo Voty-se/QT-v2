@@ -93,13 +93,13 @@ namespace QT.Models
         public static decimal PriceForDelivery(string wayOfDelivery, string zone, decimal distance, int nbrExtraItems,
             bool xlutzPays, DayOfWeek day, DateTime date)
         {
-            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
+            //var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
             var total = (nbrExtraItems) * (wayOfDelivery == Delivery.Home.ToString() ? Home.ExtraItem : SideWalk.ExtraItem);
 
             if (zone == "Zon1" && wayOfDelivery == Delivery.SideWalk.ToString())
                 total = 0;
 
-            if (day == DayOfWeek.Saturday || holidayExtraPrice)
+            if (day == DayOfWeek.Saturday)// || holidayExtraPrice)
                 total += 500;
             
             switch (zone)
@@ -151,9 +151,9 @@ namespace QT.Models
         {
             var total = (nbrExtraItems) * (wayOfDelivery == Delivery.Home.ToString() ? Home.ExtraItem : SideWalk.ExtraItem);
 
-            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
-            if (holidayExtraPrice)
-                total += 500;
+            //var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date);
+            //if (holidayExtraPrice)
+            //    total += 500;
 
             switch (zone)
             {
