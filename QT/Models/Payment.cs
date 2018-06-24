@@ -12,7 +12,7 @@ namespace QT.Models
 
         public static List<SelectListItem> ZoneList(bool retur, bool home, DayOfWeek day, DateTime date, bool showPrice = true)
         {
-            var holidayExtraPrice = new SwedenPublicHoliday().IsPublicHoliday(date) ? "Röddag extra 500kr" : "";
+            var holidayExtraPrice = "";// new SwedenPublicHoliday().IsPublicHoliday(date) ? "Röddag extra 500kr" : "";
             List<SelectListItem> list;
             if (home)
             {

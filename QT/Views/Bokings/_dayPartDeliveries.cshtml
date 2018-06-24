@@ -1,0 +1,29 @@
+﻿@using QT.Models
+
+@{
+    var car = (int) ViewData["car"];
+    var glyphiconIcon = car == 1 ? "home" : car == 2 ? "road" : "";
+    var thisCarDeliveries = (List<Boking>) ViewData["thisCarDeliveries"];
+}
+
+@for (var delivery = 0; delivery < thisCarDeliveries.Count; delivery++)
+{
+    var booking = thisCarDeliveries.ToArray()[delivery];
+
+    var colorClass = booking.Status == Status.New.ToString() ? "partNew" : booking.Status == Status.Done.ToString() ? "partDone" : "partNotDone";
+    colorClass = "col-md-2 " + colorClass;
+
+    <a class="partbooked @colorClass" href="@Url.Action("Details", new {booking.Id})">
+        @Html.Raw(booking.OrderNbr)
+        @if (booking.Type == BookingTypes.Return.ToString())
+        {
+            <span class="glyphicon glyphicon-refresh returnIcon"></span>
+        }
+        @if (booking.Type == BookingTypes.Monting.ToString())
+        {
+            <span class="glyphicon glyphicon-wrench returnIcon"></span>
+        }
+        <span class="glyphicon glyphicon-@glyphiconIcon deliveryTypeIcon"></span>
+
+    </a>
+}

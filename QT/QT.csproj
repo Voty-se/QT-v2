@@ -334,6 +334,12 @@
     <Content Include="Views\Bokings\CreateMonting.cshtml" />
     <Content Include="Views\Bokings\ProductList.cshtml" />
     <Content Include="Views\Bokings\EditMonting.cshtml" />
+    <Content Include="Views\Bokings\_day.cshtml" />
+    <Content Include="Views\Bokings\_dayPart.cshtml" />
+    <Content Include="Views\Bokings\_dayPartDeliveries.cshtml" />
+    <Content Include="Views\Bokings\_dayNewBooking.cshtml" />
+    <Content Include="Views\Bokings\_dayNewBookingMontering.cshtml" />
+    <Content Include="Views\Bokings\_dayPartDeliveriesMontering.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />

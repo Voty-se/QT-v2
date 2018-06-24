@@ -109,6 +109,10 @@ textarea {
   }
 }
 
+.isHolliday {
+    height: 90px;
+    background-color: #a54545!important;
+}
 
 .btn {
     /*color: #f7ca0d;*/

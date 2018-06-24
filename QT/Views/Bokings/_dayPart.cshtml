@@ -1,0 +1,47 @@
+﻿@using QT.Models
+
+@model Week
+
+@{
+    var dayNbr = (int)ViewData["day"];
+    var time = Model.DateFrom.AddDays(dayNbr);
+    var bookingsForPartOfTheDay = (List<Boking>)ViewData["bookingsForPartOfTheDay"];
+}
+
+@for (var car = 1; car <= 2; car++)
+{
+    <div class="col-md-12 ">
+        @{
+            var thisCarDeliveries = bookingsForPartOfTheDay.Where(hd => hd.Car.Order == car).ToList();
+
+            ViewData["car"] = car;
+            ViewData["thisCarDeliveries"] = thisCarDeliveries;
+
+            if (time.DayOfWeek == DayOfWeek.Wednesday)
+            {
+                Html.RenderPartial("_dayPartDeliveriesMontering", null, ViewData);
+            }
+            else
+            {
+                Html.RenderPartial("_dayPartDeliveries", null, ViewData);
+            }
+
+            var maxBookings = time.DayOfWeek == DayOfWeek.Wednesday ? 1 : 5;
+
+            if (thisCarDeliveries.Count() < maxBookings)
+            {
+                ViewData["time"] = time;
+
+                if (time.DayOfWeek == DayOfWeek.Wednesday)
+                {
+                    Html.RenderPartial("_dayNewBookingMontering", null, ViewData);
+                }
+                else
+                {
+                    Html.RenderPartial("_dayNewBooking", null, ViewData);
+                }
+            }
+            <div class="clearfix"></div>
+        }
+    </div>
+}

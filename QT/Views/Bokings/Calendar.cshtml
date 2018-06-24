@@ -1,5 +1,4 @@
 ﻿@using System.Globalization
-@using QT.Authentication
 @using QT.Models
 @model Week
 
@@ -11,8 +10,6 @@
                     Model.CurrentDate,
                     currentCulture.DateTimeFormat.CalendarWeekRule,
                     currentCulture.DateTimeFormat.FirstDayOfWeek);
-    
-    var isLogistic = AdminAuthenticationHelper.Current.GetAdminUserData().Role == Role.LogisticAdministrator.ToString();
 }
 
 @*<div class="well">Boka leverans</div>*@
@@ -53,124 +50,15 @@
             <div class="clearfix"></div>
         </div>
 
-        @for (var i = 0; i < 7; i++)
+        @for (var dayNbr = 0; dayNbr < 7; dayNbr++)
         {
             <div class="row calendar-row">
-            @{
-                var time = Model.DateFrom.AddDays(i);
-                //var booked = Model.Bokings.Any(b => b.BookingDay == time);
-
-                <div class="col-md-1 calendar-row-head"><strong>@LanguageDictionary.Translate[time.DayOfWeek.ToString()]</strong><br /><small>@time.ToShortDateString()</small>
-                    
-                @if (time.DayOfWeek == DayOfWeek.Saturday)
-                {
-                    <br /><small style="color: red;">(10.00 - 15.00)</small>
+                @{
+                    ViewData["day"] = dayNbr;
+                    Html.RenderPartial("_day", Model, ViewData);
                 }
-                @if (time.DayOfWeek == DayOfWeek.Wednesday)
-                {
-                    <span class="glyphicon glyphicon-wrench"></span>
-                }
-                </div>
-                <div class="col-md-11 calendar-row-wraper">
-
-                    @for (var j = 0; j < 3; j++)
-                    {
-                        var bookingsForPartOfTheDay = Model.Bokings.Where(bk => bk.BookingDay == time && bk.PartOfTheDay == j).ToList();
-                        var rowClass = bookingsForPartOfTheDay.Any() ? "row-part-empty" : "";
-                        <div class="col-md-4 container calendar-row-part @rowClass">
-
-                            @for (var p = 1; p <= 2; p++)
-                            {
-                                var glyphiconIcon = p == 1 ? "home" : "road";
-                                <div class="col-md-12 ">
-                                    @{
-                                        var thisCarDeliveries = bookingsForPartOfTheDay.Where(hd => hd.Car.Order == p).ToList();
-                                        for (var h = 0; h < thisCarDeliveries.Count; h++)
-                                        {
-                                            var booking = thisCarDeliveries.ToArray()[h];
-
-                                            //var text = p == 1 ? "Hem" : "Trottoar";
-                                            //text += " <strong>" + booking.OrderNbr + "</strong> " + booking.Customer.Name + "<br />" + booking.Customer.Address1 + "<br />" + booking.Customer.PortCode;
-
-                                            var colorClass = booking.Status == Status.New.ToString() ? "partNew" : booking.Status == Status.Done.ToString() ? "partDone" : "partNotDone";
-                                            colorClass = "col-md-2 " + colorClass;
-
-                                            <a class="partbooked @colorClass" href="@Url.Action("Details", new { booking.Id })">@Html.Raw(booking.OrderNbr )
-                                                @if (booking.Type == BookingTypes.Return.ToString())
-                                                {
-                                                    <span class="glyphicon glyphicon-refresh returnIcon" ></span>
-                                                }
-                                                @if (booking.Type == BookingTypes.Monting.ToString())
-                                                {
-                                                    <span class="glyphicon glyphicon-wrench returnIcon"></span>
-                                                }
-                                                <span class="glyphicon glyphicon-@glyphiconIcon deliveryTypeIcon"></span>
-
-                                            </a>
-                                        }
-                                        var maxBookings = time.DayOfWeek == DayOfWeek.Wednesday ? 1 : 5;
-                                        if (thisCarDeliveries.Count() < maxBookings)
-                                        {
-                                            var dayOfWeek = time.DayOfWeek;
-                                            var latestTimeToBook = DateTime.Today;//.AddHours(15);
-                                            var timeNow = (DateTime.UtcNow - DateTime.Today ).TotalHours;
-
-                                            var disable = (time <= latestTimeToBook);
-                                            disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 13);
-                                            disable = disable || (dayOfWeek == DayOfWeek.Saturday && j != 1);
-                                            disable = disable || (dayOfWeek == DayOfWeek.Saturday && p == 2);
-                                            disable = disable || (dayOfWeek == DayOfWeek.Sunday);
-                                            disable = disable || (time.Month == 12 && time.Day == 25);
-                                            disable = disable || (time.Month == 12 && time.Day == 26);
-                                            disable = disable || (time.Month == 1 && time.Day == 1);
-
-                                            if (disable)
-                                            {
-                                                <div class="col-md-2 partold"></div>
-                                            }
-                                            else
-                                            {
-                                                var delivery = p == 1 ? Delivery.Home : Delivery.SideWalk;
-                                                if (dayOfWeek != DayOfWeek.Wednesday)
-                                                {
-                                                    if (isLogistic)
-                                                    {
-                                                        <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateRetur", new {time, part = j, delivery})">
-                                                            <span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span>
-                                                        </a>
-                                                    }
-                                                    else
-                                                    {
-                                                        <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("Create", new {time, part = j, delivery})">
-                                                            <span class="newBookingIconPlus glyphicon glyphicon-plus"></span><span class="newBookingIcon glyphicon glyphicon-@glyphiconIcon"></span>
-                                                        </a>
-                                                    }
-                                                }
-                                                else //if (j != 1)
-                                                {
-                                                    <a class="col-md-2 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = j, delivery})">
-                                                        <span class="newBookingIconPlus glyphicon glyphicon-plus"></span>
-                                                        <span class="newBookingIcon glyphicon glyphicon-wrench"></span>
-                                                    </a>
-                                                }
-                                            }
-                                        }
-                                        <div class="clearfix"></div>
-                                    }
-                                </div>
-                                if (time.DayOfWeek == DayOfWeek.Wednesday)
-                                {
-                                    break;
-                                }
-                            }
-                        </div>
-                     }
-                    <div class="clearfix"></div>
-                </div>
-                <div class="clearfix"></div>
-            }
             </div>
-         }
+        }
     </div>
 
 </div>

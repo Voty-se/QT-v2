@@ -1,0 +1,49 @@
+﻿@using PublicHoliday
+@using QT.Models
+@model Week
+
+@{
+    var dayNbr = (int) ViewData["day"];
+    var time = Model.DateFrom.AddDays(dayNbr);
+    var isHolliday = time.DayOfWeek == DayOfWeek.Sunday || new SwedenPublicHoliday().IsPublicHoliday(time);
+    var hollidayClass = isHolliday ? "isHolliday" : "";
+
+    <div class="col-md-1 calendar-row-head">
+        <strong>@LanguageDictionary.Translate[time.DayOfWeek.ToString()]</strong><br/><small>@time.ToShortDateString()</small>
+
+        @if (time.DayOfWeek == DayOfWeek.Saturday)
+        {
+            <br/>
+            <small style="color: red;">(10.00 - 15.00)</small>
+        }
+        @if (time.DayOfWeek == DayOfWeek.Wednesday)
+        {
+            <span class="glyphicon glyphicon-wrench"></span>
+        }
+    </div>
+
+    <div class="col-md-11 calendar-row-wraper @hollidayClass">
+        @if (!isHolliday)
+        {
+            var partClass = time.DayOfWeek == DayOfWeek.Wednesday ? "6" : "4";
+            for (var dayPart = 0; dayPart < 3; dayPart++)
+            {
+                if (time.DayOfWeek == DayOfWeek.Wednesday && dayPart == 2)
+                {
+                    break;
+                }
+                var bookingsForPartOfTheDay = Model.Bokings.Where(bk => bk.BookingDay == time && bk.PartOfTheDay == dayPart).ToList();
+                var rowClass = bookingsForPartOfTheDay.Any() ? "row-part-empty" : "";
+                <div class="col-md-@partClass container calendar-row-part @rowClass">
+                    @{
+                        ViewData["dayPart"] = dayPart;
+                        ViewData["bookingsForPartOfTheDay"] = bookingsForPartOfTheDay;
+                        Html.RenderPartial("_dayPart", Model, ViewData);
+                    }
+                </div>
+            }
+        }
+        <div class="clearfix"></div>
+    </div>
+    <div class="clearfix"></div>
+}

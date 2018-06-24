@@ -1,0 +1,40 @@
+﻿@using QT.Models
+@{
+
+    var car = (int) ViewData["car"];
+    var glyphiconIcon = car == 1 ? "home" : "road";
+    var time = (DateTime) ViewData["time"];
+
+    var dayPart = (int) ViewData["dayPart"];
+    var dayOfWeek = time.DayOfWeek;
+    var latestTimeToBook = DateTime.Today; //.AddHours(15);
+    var timeNow = (DateTime.UtcNow - DateTime.Today).TotalHours;
+
+    var disable = time <= latestTimeToBook;
+    disable = disable || (time == latestTimeToBook.AddDays(1) && timeNow > 13);
+    disable = disable || (dayOfWeek == DayOfWeek.Saturday && dayPart != 1);
+    disable = disable || (dayOfWeek == DayOfWeek.Saturday && car == 2);
+    disable = disable || (dayOfWeek == DayOfWeek.Sunday);
+    disable = disable || (time.Month == 12 && time.Day == 25);
+    disable = disable || (time.Month == 12 && time.Day == 26);
+    disable = disable || (time.Month == 1 && time.Day == 1);
+
+    var thisCarDeliveries = (List<Boking>) ViewData["thisCarDeliveries"];
+    var newMontering = thisCarDeliveries.All(c => c.Type != BookingTypes.Monting.ToString());
+    newMontering = newMontering && dayPart != 1;
+
+    if (disable)
+    {
+        <div class="col-md-6 partold"></div>
+    }
+    else
+    {
+        var delivery = car == 1 ? Delivery.Home : Delivery.SideWalk;
+        
+            <a class="col-md-6 delivery-@delivery partnotbooked" href="@Url.Action("CreateMonting", new {time, part = dayPart, delivery})">
+                <span class="newBookingIconPlus glyphicon glyphicon-plus"></span>
+                <span class="newBookingIcon glyphicon glyphicon-wrench"></span>
+            </a>
+        
+    }
+}
