@@ -291,6 +291,7 @@ namespace QT.Controllers
         [VotyAuthorize(Role.xlutz, Role.Administrator)]
         public ActionResult Create(DateTime time, int part, Delivery delivery)
         {
+            Session["products"] = new List<StandarProduct>();
             var booking = new Boking
             {
                 Type = BookingTypes.Booking.ToString(),
@@ -311,6 +312,7 @@ namespace QT.Controllers
         [VotyAuthorize(Role.LogisticAdministrator)]
         public ActionResult CreateRetur(DateTime time, int part, Delivery delivery)
         {
+            Session["products"] = new List<StandarProduct>();
             var booking = new Boking()
             {
                 Type = BookingTypes.Return.ToString(),
@@ -467,7 +469,7 @@ namespace QT.Controllers
                     boking.CreatedBy = user;
                     boking.Car = userFor;
 
-                    var productList = (List<StandarProduct>)Session["products"];
+                    var productList = (List<StandarProduct>)Session["products"] ?? new List<StandarProduct>();
                     if (productList != null && productList.Any())
                         boking.Product = productList.Select(p => new Product
                         {
@@ -514,7 +516,7 @@ namespace QT.Controllers
         {
             var product = ProductContainer.Products.FirstOrDefault(p => p.Id == productId);
 
-            var productList = (List<StandarProduct>) Session["products"];
+            var productList = (List<StandarProduct>) Session["products"] ?? new List<StandarProduct>();
             productList.Add(product);
             Session["products"] = productList;
 
@@ -523,7 +525,7 @@ namespace QT.Controllers
         [HttpPost]
         public ActionResult RemoveProductbyId(int productId)
         {
-            var productList = (List<StandarProduct>)Session["products"];
+            var productList = (List<StandarProduct>)Session["products"] ?? new List<StandarProduct>();
             if (productId >= 0)
             {
                 var product = productList.FirstOrDefault(p => p.Id == productId);
@@ -592,8 +594,9 @@ namespace QT.Controllers
 
             try
             {
-                var productList = (List<StandarProduct>) Session["products"];
-                value += GetPriceFrMonting(productList);
+                var productList = (List<StandarProduct>) Session["products"] ?? new List<StandarProduct>();
+                if (productList != null && productList.Any())
+                    value += GetPriceFrMonting(productList);
             }
             catch (Exception e)
             {
@@ -633,7 +636,7 @@ namespace QT.Controllers
                 //priceDetails.AppendLine("");
                 if (booking.Type == BookingTypes.Monting.ToString())
                 {
-                    var productList = (List<StandarProduct>)Session["products"];
+                    var productList = (List<StandarProduct>)Session["products"] ?? new List<StandarProduct>();
                     var priceMonting = GetPriceFrMonting(productList);
                     price += priceMonting;
                     priceDetails.AppendLine("Pris för montering:          " + priceMonting);
@@ -685,7 +688,7 @@ namespace QT.Controllers
         [HttpPost]
         public string GetPriceMonting()
         {
-            var productList = (List<StandarProduct>)Session["products"];
+            var productList = (List<StandarProduct>)Session["products"] ?? new List<StandarProduct>();
             var priceText = "Pris för montering:          " + GetPriceFrMonting(productList);
             return priceText;
         }
@@ -706,7 +709,8 @@ namespace QT.Controllers
 
             if (boking.Type == BookingTypes.Return.ToString())
                 return View("EditReturn", boking);
-            else if (boking.Type == BookingTypes.Monting.ToString())
+
+            if (boking.Type == BookingTypes.Monting.ToString())
             {
                 Session["products"] = new List<StandarProduct>(boking.Product.Select(p => new StandarProduct
                 {
@@ -717,8 +721,8 @@ namespace QT.Controllers
                 }));
                 return View("EditMonting", boking);
             }
-            else
-                boking.Remarks = boking.Remarks ?? "";
+
+            boking.Remarks = boking.Remarks ?? "";
 
             return View(boking);
         }
@@ -871,9 +875,9 @@ namespace QT.Controllers
                 booking.Type = boking.Type;
                 booking.Canceled = boking.Canceled;
 
-                var productList = (List<StandarProduct>)Session["products"];
+                var productList = (List<StandarProduct>)Session["products"] ?? new List<StandarProduct>();
 
-                if (productList != null && productList.Any())
+                if (productList.Any())
                     booking.Product = productList.Select(p => new Product
                     {
                         Name = p.Name,
