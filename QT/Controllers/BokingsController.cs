@@ -595,7 +595,7 @@ namespace QT.Controllers
             try
             {
                 var productList = (List<StandarProduct>) Session["products"] ?? new List<StandarProduct>();
-                if (productList != null && productList.Any())
+                if (productList.Any())
                     value += GetPriceFrMonting(productList);
             }
             catch (Exception e)
